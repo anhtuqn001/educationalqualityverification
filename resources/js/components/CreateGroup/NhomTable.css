@@ -1,0 +1,42 @@
+.ant-table-expanded-row > .ant-table-cell {
+    background-color: #f0f0f0;
+}
+
+.ant-table-expanded-row:hover > .ant-table-cell {
+    background-color: #f0f0f0
+}
+
+.ant-table-expanded-row .ant-table-thead > tr > th {
+    background-color: #f0f0f0;
+}
+
+.ant-table-expanded-row .ant-table-tbody > tr > td {
+    background-color: #f0f0f0;
+}
+
+
+/* .ant-table-expanded-row > td.ant-table-cell {
+    border: 2px solid #1890ff;
+    box-sizing: border-box;
+} */
+
+.ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > thead > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > thead > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > thead > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > tbody > tr > td, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > tbody > tr > td, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tfoot > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > tfoot > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > tfoot > tr > th, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tfoot > tr > td, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-header > table > tfoot > tr > td, .ant-table.ant-table-bordered > .ant-table-container > .ant-table-body > table > tfoot > tr > td {
+    border-right: 1px solid #8c8c8c;
+}
+
+.ant-table-thead > tr {
+    border-left: 1px solid #8c8c8c;
+}
+
+.ant-table-thead > tr > th {
+    border-top: 1px solid #8c8c8c;
+    border-bottom: 1px solid #8c8c8c;
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: 1px solid #8c8c8c;
+}
+
+table {
+    border-left: 1px solid #8c8c8c;
+}
