@@ -40,6 +40,14 @@ Route::group([
     Route::get('getchimucfromuser/{userId}', 'ChiMucController@getChiMucFromUser');
     Route::post('applychimuc', 'ChiMucController@applyChiMucsToUser');
     Route::post('removechimuc', 'ChiMucController@removeChiMucsFromUser');
+
+    Route::get('chimuctest', 'ChiMucController@chimucTest');
+    Route::get('getchimuctable/{id}', 'ChiMucController@getChimucTableTypeFromUser');
+    Route::put('updatechimuctabledetails', 'ChiMucController@updateChimucTableDetails');
+    Route::put('updatechimuccontent', 'ChiMucController@updateChimucContent');
+
 });
 
 Route::post('login', 'AuthController@doLogin');
+
+Route::get('/exportqdtlhdtdg', 'WordExportController@createQDTLHDTGDDocx');

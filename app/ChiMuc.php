@@ -15,6 +15,18 @@ class ChiMuc extends Model
     public function chimuccha() {
         return $this->belongsTo("App\ChiMuc", 'chimucchaid');
     }
+ 
+    public function columns() {
+        return $this->hasMany("App\Column", 'chimucid');
+    }
+
+    public function chimucTableDetails() {
+        return $this->hasMany("App\ChimucTableDetail", 'chimucid');
+    }
+
+    public function chibaos() {
+        return $this->hasMany("App\ChiBao", "tieuchiid");
+    }
 
     public function applyChiMucCons() {
         if(count($this->chimuccons) == 0) {

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
 import { Form, Input, Button, Checkbox, Row, Col, Space, Alert, Table, Modal, Popconfirm, message } from 'antd';
 import { useHistory } from "react-router-dom";
@@ -11,10 +11,10 @@ import EditNhomModal from './EditNhomModal.js';
 import EditUserModal from './EditUserModal.js';
 import DeleteNhomButton from './DeleteNhomButton.js'
 import NhomTable from './NhomTable.js';
-
+import { LogoutContext } from '../Contexts.js';
 const styles = {
     container: {
-        padding: '0 250px',
+        padding: '0 100px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -43,7 +43,7 @@ const styles = {
     }
 }
 
-const CreateGroup = () => {
+const CreateGroup = ({ setAuthFalse }) => {
     const [nhoms, setNhoms] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCreateNhomModalOpen, setIsCreateNhomModalOpen] = useState(false);
@@ -53,6 +53,7 @@ const CreateGroup = () => {
     const [currentNhom, setCurrentNhom] = useState({});
     const [currentUser, setCurrentUser] = useState({});
     const [selectedThanhvienRowKey, setSelectedThanhvienRowKey] = useState([]);
+    const { doLogout } = useContext(LogoutContext);
 
     useEffect(() => {
         setIsLoading(true);
@@ -73,10 +74,10 @@ const CreateGroup = () => {
             }, (error) => {
                 if (error.status == 401) {
                     localStorage.removeItem("token");
-                    history.push('/dangnhap');
+                    // history.push('/dangnhap');
+                    doLogout();
                 }
-            }
-            )
+            })
     }, [])
 
     function handleOpenCreateModal() {

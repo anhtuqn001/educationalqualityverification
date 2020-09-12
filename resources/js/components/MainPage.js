@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { withRouter } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Progress, Spin, Space, message } from 'antd';
 import CustomHeader from './Header.js';
 import MenuBar from './MenuBar.js';
 import CreateGroup from './CreateGroup/index.js';
 import Assignments from './Assignments/index.js';
 import { ChromeOutlined } from '@ant-design/icons';
-import { Route, useRouteMatch, Switch } from "react-router-dom";
-
-
+import { BrowserRouter as Router, Route, useRouteMatch, Switch, Link, useHistory, withRouter } from "react-router-dom";
+import LoginPage from "./LoginPage.js";
+import { LogoutContext } from "./Contexts.js";
+import ManageTasks from './ManageTasks/index.js';
+import CouncilEstablishment from './CouncilEstablishment/index.js';
 const layout = {
     labelCol: {
         span: 8,
@@ -45,20 +46,30 @@ const { Header, Content, Footer } = Layout;
 
 const antIcon = <ChromeOutlined style={{ fontSize: 50 }} spin />;
 
-
-
 class MainPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             auth: false,
             isTokenValidated: false,
-            user: null
+            user: null,
+            isLoaded: false
         }
+        this.setAuthFalse = this.setAuthFalse.bind(this);
+        this.getUserInfo = this.getUserInfo.bind(this);
     }
 
     componentDidMount() {
-        let { history } = this.props;
+        if (!(localStorage.getItem("token") === null)) {
+            this.getUserInfo();
+        } else {
+            this.setState({
+                isLoaded: true
+            })
+        }
+    }
+
+    getUserInfo() {
         let token = localStorage.getItem("token");
         if (!!token) {
             fetch("/api/user", {
@@ -78,107 +89,85 @@ class MainPage extends React.Component {
                             auth: true,
                             user: result.user
                         })
+                        console.log(result.user);
                     }
-                    console.log(result)
                 })
                 .catch((err) => {
                     if (err.status == 401) {
                         this.setState({
-                            auth: true
+                            auth: false,
+                            user: null
                         })
                         localStorage.removeItem("token");
-                        history.push('/dangnhap');
+                        // history.push('/dangnhap');
                     }
                     if (err.status == 500) {
 
                     }
                 })
                 .then(() => this.setState({
-                    isTokenValidated: true
+                    isLoaded: true
                 }));
         } else {
-            history.push('/dangnhap');
+            // history.push('/dangnhap');
         }
     }
 
+    setAuthFalse() {
+        this.setState({
+            auth: false,
+            user: null
+        })
+        this.props.history.push('/');
+    }
 
     render() {
-        let { isTokenValidated, user } = this.state;
-        let { match } = this.props;
-        if (!isTokenValidated) {
+        let { user, auth, isLoaded } = this.state;
+        if (auth) {
+            return (
+                <Switch>
+                    <LogoutContext.Provider value={{ doLogout: this.setAuthFalse }}>
+                        <Layout className="layout">
+                            <CustomHeader tendangnhap={user.name} />
+                            <MenuBar role={user.role} />
+                            <Content style={{ padding: '10px 50px' }}>
+                                {/* <div className="site-layout-content">Content</div> */}
+                                <Route exact path="/">
+                                    <div style={{display:'flex', justifyContent:'center'}}>
+                                        <img src="/images/intro7.png" alt="introduction" style={{ width: '80%', height: 'auto' }} />
+                                    </div>
+                                </Route>
+                                <Route path="/creategroup">
+                                    <CreateGroup setAuthFalse={this.setAuthFalse} />
+                                </Route>
+                                <Route path="/assignments">
+                                    <Assignments setAuthFalse={this.setAuthFalse} />
+                                </Route>
+                                <Route path="/managetasks">
+                                    <ManageTasks userId={user.id} />
+                                </Route>
+                                <Route path="/councilestablishment">
+                                    <CouncilEstablishment />
+                                </Route>
+                            </Content>
+                            <Footer style={{ textAlign: 'center' }}>Bản quyền Lihanet - 2020</Footer>
+                        </Layout>
+                    </LogoutContext.Provider>
+                </Switch>
+            )
+        } else if (isLoaded) {
+            return (
+                <LoginPage getUserInfo={this.getUserInfo} />
+            );
+        } else {
             return (
                 <div style={styles.container}>
                     <Spin size="large" indicator={antIcon} />
                 </div>
-            );
+            )
         }
-        return (
-            <Layout className="layout">
-                <CustomHeader tendangnhap={user.name} />
-                <MenuBar />
-                <Content style={{ padding: '10px 50px' }}>
-                    {/* <div className="site-layout-content">Content</div> */}
-                    <Switch>
-        <               Route path={`${match.path}creategroup`} render={() => <CreateGroup />} />
-                        <Route path={`${match.path}assignments`} render={() => <Assignments />} />
-                    </Switch>
-                    {/* { this.props.children } */}
-                </Content>
-                <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
-            </Layout>
-        )
+
     };
 };
-
-// function MainPage() {
-//     const [auth, setAuth] = useState(false);
-//     const [isTokenValidated, setIsTokenValidated] = useState(false);
-//     const [tendangnhap, setTendangnhap] = useState('');
-//     const [idTaikhoan, setIdTaikhoan] = useState('');
-//     let history = useHistory();
-
-//     useEffect(() => {
-//         let token = localStorage.getItem("token");
-//         if (token) {
-//             fetch("/api/user", {
-//                 method: "GET",
-//                 headers: {
-//                     'Accept': 'application/json',
-//                     'Authorization': 'Bearer ' + token
-//                 }
-//             })
-//                 .then((res) => {
-//                     if (!res.ok) return Promise.reject(res);
-//                     return res.json();
-//                 })
-//                 .then((result) => {
-//                     if (result.success) {
-//                         setAuth(true);
-//                         setTendangnhap(result.user.name);
-//                         setIdTaikhoan(result.user.id);
-//                     }
-//                 })
-//                 .catch((err) => {
-//                     if (err.status == 401) {
-//                         setAuth(false);
-//                         localStorage.removeItem("token");
-//                         history.push('/dangnhap');
-//                     }
-//                 })
-//                 .then(() => setIsTokenValidated(true));
-//         } else {
-//             history.push('/dangnhap');
-//         }
-//     }, [])
-
-
-
-//     return (
-//         <div>
-//             <NavigationBar tendangnhap={tendangnhap} idTaikhoan={idTaikhoan}/>
-//             <MainContent history={history} />
-//         </div>
-//     );
-// }
 
 export default withRouter(MainPage);

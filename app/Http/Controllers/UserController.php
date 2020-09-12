@@ -21,6 +21,7 @@ class UserController extends Controller
         $user->isMale = $request->input('isMale') == "true";
         $user->isTruongnhom = $request->input('isTruongnhom') == "true";
         $user->isTimkiemminhchung = $request->input('isTimkiemminhchung') == "true";
+        $user->role = 3;
         $user->thuocdonvi()->associate($nhom);
         $user->save();
         } catch(Exception $e){

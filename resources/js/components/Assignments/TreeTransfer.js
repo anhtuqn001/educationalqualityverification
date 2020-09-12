@@ -1,23 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.css';
 import { Transfer, Tree, message, Typography, Button } from 'antd';
-import { reformatChiMucKeysData, generateTree } from './utils.js';
-const { Title, Text } = Typography;
+import { reformatChiMucKeysData, generateTree } from '../utils.js';
+import { LogoutContext } from '../Contexts.js';
 
-const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, changeCurrentUserChiMucs }) => {
+const { Title, Text } = Typography;
+const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, changeCurrentUserChiMucs, expandRightKeys, setExpandRightKeysFunc }) => {
     const [leftCheckedKeys, setLeftCheckedKeys] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
     const [halfKeys, setHalfKeys] = useState([]);
-    const [expandRightKeys, setExpandRightKeys] = useState([]);
     const [rightCheckedKeys, setRightCheckedKeys] = useState([]);
+    const [rightHalfKeys, setRightHalfKeys] = useState([]);
     const [isDisabled, setIsDisabled] = useState(false);
+    const { doLogout } = useContext(LogoutContext);
+    const [expandRightKeysChild, setExpandRightKeysChild] = useState([]);
 
     useEffect(() => {
-        onExpandAll();
-    }, []);
+        setLeftCheckedKeys(selectedsKeys);
+    }, [userId]);
 
+    useEffect(() => {
+        setLeftCheckedKeys(selectedsKeys);
+    }, [selectedsKeys]);
+
+    useEffect(() => {
+        setExpandRightKeysChild(expandRightKeys)
+    }, [])
+
+    useEffect(() => {
+        setExpandRightKeysChild(expandRightKeys)
+    }, [expandRightKeys])
 
     const onChange = (keys, direction ) => {
         if (direction == 'right') {
@@ -41,7 +55,6 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
                         return response.json();
                     })
                     .then((result) => {
-                        console.log(result);
                         changeCurrentUserChiMucs(result.chimucs);
                     })
                     .catch((error) => {
@@ -49,9 +62,9 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
                         if(localStorage.getItem("token") !== null){
                         localStorage.removeItem("token");
                         }
-                        history.push('/dangnhap');
+                        // history.push('/dangnhap');
+                        doLogout();
                     } else {
-                        console.log(error);
                         message.error("Lỗi hệ thống");
                     }
                 });
@@ -64,6 +77,7 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
             // setTargetKeys(newTargetKeys);
             let data = {
                 chimucs : reformatChiMucKeysData(chimucs, rightCheckedKeys).map(i => i.id),
+                halfchimucs: reformatChiMucKeysData(chimucs, rightHalfKeys).map(i => i.id),
                 userid : userId
             }
             fetch('/api/removechimuc', {
@@ -80,17 +94,17 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
                         return response.json();
                     })
                     .then((result) => {
-                        console.log(result);
                         changeCurrentUserChiMucs(result.chimucs);
+                        console.log(result.halfchimucs);
                     })
                     .catch((error) => {
                     if(error.status == 401) {
                         if(localStorage.getItem("token") !== null){
                         localStorage.removeItem("token");
                         }
-                        history.push('/dangnhap');
+                        // history.push('/dangnhap');
+                        doLogout();
                     } else {
-                        console.log(error);
                         message.error("Lỗi hệ thống");
                     }
                 });
@@ -98,25 +112,12 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
     }
 
     const handleExpand = expandedKeys => {
-        console.log("onExpand", expandedKeys);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
         // or, you can remove all expanded children keys.
-        setExpandRightKeys(expandedKeys)
+        setExpandRightKeysFunc(expandedKeys)
     };
 
-    const onExpandAll = () => {
-        const expandedKeys = [];
-        const expandMethod = arr => {
-          arr.forEach(data => {
-            expandedKeys.push(data.key);
-            if (data.children) {
-              expandMethod(data.children);
-            }
-          });
-        };
-        expandMethod(chimucs);  
-        setExpandRightKeys(expandedKeys);
-      };
+    
     
     const test = () => {
         setLeftCheckedKeys(['0-0-2'])
@@ -124,7 +125,7 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
 
     return (
         <React.Fragment>
-            <Button type="primary" onClick={test}>Test</Button>
+            {/* <Button type="primary" onClick={test}>Test</Button> */}
             <Transfer
                 onChange={onChange}
                 titles={[, <Text strong>{tenUser}</Text>]}
@@ -160,14 +161,14 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
                                 // autoExpandParent
                                 treeData={generateTree(chimucs, true, targetsKeys, selectedsKeys)}
                                 height={500}
-                                expandedKeys={expandRightKeys}
+                                expandedKeys={expandRightKeysChild}
                                 onExpand={handleExpand}
                                 onCheck={(selectedKeys, info) => {
                                     setRightCheckedKeys(selectedKeys);
+                                    setRightHalfKeys(info.halfCheckedKeys);
                                     let keyEventTarget = info.node.key;
                                     onItemSelect(keyEventTarget, selectedKeys.includes(keyEventTarget));
                                 }}
-
                             />
                         );
                     }

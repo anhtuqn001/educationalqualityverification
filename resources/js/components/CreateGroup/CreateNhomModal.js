@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
 import { Form, Input, Button, Modal, message } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { LogoutContext } from '../Contexts';
 
 const layout = {
     labelCol: {
@@ -21,6 +22,7 @@ const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom }) => 
     const [tennhom, setTennhom] = useState('');
     const [ghichu, setGhichu] = useState('');
     const history = useHistory();
+    const { doLogout } = useContext(LogoutContext);
 
     function handleManhomInputChange(e) {
         e.preventDefault();
@@ -74,7 +76,8 @@ const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom }) => 
                 if(localStorage.getItem("token") !== null){
                 localStorage.removeItem("token");
                 }
-                history.push('/dangnhap');
+                // history.push('/dangnhap');
+                doLogout();
               } else {
                 console.log(error);
                 message.error("Lỗi hệ thống");
@@ -98,6 +101,7 @@ const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom }) => 
                     Hủy
                 </Button>,
             ]}
+            destroyOnClose={true}
         >
             <Form
                 {...layout}

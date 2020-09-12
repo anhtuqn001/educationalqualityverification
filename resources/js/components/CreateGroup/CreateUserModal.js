@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
 import { Form, Input, Button, Modal, message, Row, Col, Checkbox } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { LogoutContext } from '../Contexts.js';
 
 const layout = {
     labelCol: {
@@ -26,6 +27,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
     const [isTimkiemminhchung, setIsTimkiemminhchung] = useState(false);
     const [isTruongnhom, setIsTruongnhom] = useState(false);
     const history = useHistory();
+    const { doLogout } = useContext(LogoutContext);
 
     function handleNameInputChange(e) {
         e.preventDefault();
@@ -59,13 +61,25 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
     function onIsTruongnhomCheckboxChange(e) {
         setIsTruongnhom(e.target.checked);
     }
-    
+
     function onIsTimkiemminhchungCheckboxChange(e) {
         setIsTimkiemminhchung(e.target.checked);
     }
 
+    // function clearInputs() {
+    //     setName('');
+    //     setHoten('');
+    //     setChucvu('');
+    //     setNhiemvu('');
+    //     setPassword('');
+    //     setIsMale(false);
+    //     setIsTimkiemminhchung(false);
+    //     setIsTruongnhom(false);
+    //     console.log('cleared');
+    // }
+
     function handleSubmit() {
-        if(false) {
+        if (false) {
 
         }
         setIsLoading(true);
@@ -83,34 +97,34 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
         fetch('/api/user', {
             method: 'post',
             headers: {
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-              'Authorization': 'Bearer ' + localStorage.getItem("token"),
-              'Content-Type': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-          })
+        })
             .then((response) => {
-                if(!response.ok) return Promise.reject(response);
+                if (!response.ok) return Promise.reject(response);
                 return response.json();
             })
             .then((result) => {
-              setIsLoading(false);
-              handleCloseCreateUserModal();
-              message.success("Tạo thành viên thành công!")
-              appendUser(result.user);
+                setIsLoading(false);
+                handleCloseCreateUserModal();
+                message.success("Tạo thành viên thành công!");
+                appendUser(result.user);
             })
             .catch((error) => {
-              if(error.status == 401) {
-                if(localStorage.getItem("token") !== null){
-                localStorage.removeItem("token");
+                if (error.status == 401) {
+                    if (localStorage.getItem("token") !== null) {
+                        localStorage.removeItem("token");
+                    }
+                    doLogout();
+                } else {
+                    console.log(error);
+                    message.error("Lỗi hệ thống");
                 }
-                history.push('/dangnhap');
-              } else {
-                console.log(error);
-                message.error("Lỗi hệ thống");
-              }
-              setIsLoading(false);   
-        });
+                setIsLoading(false);
+            });
     }
     return (
         <Modal
@@ -135,6 +149,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                     Hủy
                 </Button>,
             ]}
+            destroyOnClose={true}
         >
             <Form
                 {...layout}
@@ -151,29 +166,11 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                                 },
                             ]}
                             style={{ marginBottom: '5px' }}
-                        onChange={handleNameInputChange}
+                            onChange={handleNameInputChange}
                         >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Chức vụ"
-                            name="chucvu"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Chức vụ không được để trống',
-                                },
-                            ]}
-                            style={{ marginBottom: '5px' }}
-                            onChange={handleChucvuInputChange}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
                     <Col span={12}>
                         <Form.Item
                             label="Họ tên"
@@ -189,6 +186,52 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                         >
                             <Input />
                         </Form.Item>
+                        {/* <Form.Item
+                            label="Chức vụ"
+                            name="chucvu"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Chức vụ không được để trống',
+                                },
+                            ]}
+                            style={{ marginBottom: '5px' }}
+                            onChange={handleChucvuInputChange}
+                        >
+                            <Input />
+                        </Form.Item> */}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Chức vụ"
+                            name="chucvu"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Chức vụ không được để trống',
+                                },
+                            ]}
+                            style={{ marginBottom: '5px' }}
+                            onChange={handleChucvuInputChange}
+                        >
+                            <Input />
+                        </Form.Item>
+                        {/* <Form.Item
+                            label="Họ tên"
+                            name="hoten"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Họ tên không được để trống',
+                                },
+                            ]}
+                            style={{ marginBottom: '5px' }}
+                            onChange={handleHotenInputChange}
+                        >
+                            <Input />
+                        </Form.Item> */}
                     </Col>
                     <Col span={12}>
                         <Form.Item
@@ -221,36 +264,36 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                             style={{ marginBottom: '5px' }}
                             onChange={handlePasswordInputChange}
                         >
-                            <Input type="password"/>
+                            <Input type="password" />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row justify="center">
                     <Col span={4}>
-                        <Form.Item wrapperCol={{span:24}} style={{marginBottom:'5px'}}>
+                        <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                            checked={isMale}
-                            onChange={onIsMaleCheckboxChange}
+                                checked={isMale}
+                                onChange={onIsMaleCheckboxChange}
                             >
-                            Nam
+                                Nam
                             </Checkbox>
                         </Form.Item>
                     </Col>
                     <Col span={6}>
-                    <Form.Item wrapperCol={{span:24}} style={{marginBottom:'5px'}}>
+                        <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                            checked={isTruongnhom}
-                            onChange={onIsTruongnhomCheckboxChange}
+                                checked={isTruongnhom}
+                                onChange={onIsTruongnhomCheckboxChange}
                             >
                                 Trưởng nhóm
                             </Checkbox>
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                    <Form.Item wrapperCol={{span:24}} style={{marginBottom:'5px'}}>
+                        <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                            checked={isTimkiemminhchung}
-                            onChange={onIsTimkiemminhchungCheckboxChange}
+                                checked={isTimkiemminhchung}
+                                onChange={onIsTimkiemminhchungCheckboxChange}
                             >
                                 Tìm kiếm minh chứng
                             </Checkbox>

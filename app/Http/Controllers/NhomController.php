@@ -13,7 +13,7 @@ class NhomController extends Controller
        if($truong != null) {
            $nhoms = $truong->nhoms()->with('users')->get();
        }
-       return response()->json(['nhoms' => $nhoms ], 200);
+       return response()->json(['nhoms' => $nhoms], 200);
     }
 
     public function store(Request $request) {

@@ -10,6 +10,6 @@ class Truong extends Model
 
     public function nhoms()
     {
-        return $this->hasMany('App\Nhom', 'truongid');
+        return $this->hasMany('App\Nhom', 'truongid')->orderBy('loainhom', 'DESC');
     }
 }

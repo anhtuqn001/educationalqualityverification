@@ -84,6 +84,10 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    // public function chimucWithTable() {
+
+    // }
+
     
 
     

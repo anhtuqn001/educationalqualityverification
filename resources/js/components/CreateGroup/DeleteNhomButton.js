@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { Popconfirm, Button, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { LogoutContext } from '../Contexts.js';
 
 const styles = {
     deleteButton: {
@@ -14,6 +15,7 @@ const styles = {
 const DeleteNhomButton = ({ currentNhom, currentUser, removeUserItem, removeNhomItem }) => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { doLogout } = useContext(LogoutContext);
 
     function handleVisibleChange(visible) {
         if (!visible) {
@@ -61,7 +63,8 @@ const DeleteNhomButton = ({ currentNhom, currentUser, removeUserItem, removeNhom
                     if (localStorage.getItem("token") !== null) {
                         localStorage.removeItem("token");
                     }
-                    history.push('/dangnhap');
+                    // history.push('/dangnhap');
+                    doLogout();
                 } else {
                     console.log(error);
                     message.error("Lỗi hệ thống");
@@ -103,7 +106,8 @@ const DeleteNhomButton = ({ currentNhom, currentUser, removeUserItem, removeNhom
                     if (localStorage.getItem("token") !== null) {
                         localStorage.removeItem("token");
                     }
-                    history.push('/dangnhap');
+                    // history.push('/dangnhap');
+                    doLogout();
                 } else {
                     console.log(error);
                     message.error("Lỗi hệ thống");

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import { Layout, Menu, Breadcrumb, Typography, Button} from 'antd';
+import { Layout, Menu, Breadcrumb, Typography, Button } from 'antd';
 import { useHistory } from "react-router-dom";
 import { PoweroffOutlined } from '@ant-design/icons';
+import { LogoutContext } from "./Contexts.js";
 
 const { Title, Text } = Typography;
 
@@ -11,7 +12,7 @@ const { Header } = Layout;
 
 const styles = {
     menuBar: {
-        backgroundColor : '#096dd9',
+        backgroundColor: '#096dd9',
         padding: '0px 30px',
         display: 'flex',
         alignItems: 'center',
@@ -32,29 +33,34 @@ const styles = {
 const CustomHeader = ({ tendangnhap }) => {
     const history = useHistory();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    function doLogout() {
-        if(localStorage.getItem("token") === null){
-            history.push('/dangnhap');
+    const { doLogout } = useContext(LogoutContext);
+
+    function handleLogout() {
+        if (localStorage.getItem("token") === null) {
+            doLogout();
+            // setAuthFalse();
         } else {
             setIsLoggingOut(true);
             fetch('/api/logout', {
                 method: 'post',
                 headers: {
-                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                  'Content-Type': 'application/json'
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    token : localStorage.getItem("token")
+                    token: localStorage.getItem("token")
                 })
-              })
+            })
                 .then((response) => {
-                  if (!response.ok) return Promise.reject(response);
-                  return response.json();
+                    if (!response.ok) return Promise.reject(response);
+                    return response.json();
                 })
                 .then((resData) => {
-                  setIsLoggingOut(true);
-                  localStorage.removeItem('token');
-                  history.push('/dangnhap');
+                    setIsLoggingOut(true);
+                    localStorage.removeItem('token');
+                    //   history.push('/dangnhap');
+                    // setAuthFalse();
+                    doLogout();
                 })
                 .catch((error) => {
                     // setErrorMessages(['Lỗi hệ thống'])
@@ -63,8 +69,8 @@ const CustomHeader = ({ tendangnhap }) => {
                     // })
                     console.log(error);
                 });
-            };
-        }
+        };
+    }
     return (
         <Header style={styles.menuBar}>
             {/* <div className="logo" />
@@ -75,13 +81,19 @@ const CustomHeader = ({ tendangnhap }) => {
                     </Menu> */}
             <img src="/images/logo2.png" alt="logo" style={styles.img} />
             <Title level={3} style={styles.title}>PHẦN MỀM KIỂM ĐỊNH CHẤT LƯỢNG GIÁO DỤC</Title>
-            <Text style={{marginLeft:'auto', marginRight:'10px', color:'white'}}>Xin chào, {tendangnhap}</Text>
-            <Button
-                type="primary"
-                style={{backgroundColor: 'inherit'}}
-                onClick={doLogout}
-                loading={isLoggingOut}
-                icon={<PoweroffOutlined />}>ĐĂNG XUẤT</Button>
+            <Text style={{ marginLeft: 'auto', marginRight: '10px', color: 'white' }}>Xin chào, {tendangnhap}</Text>
+            <LogoutContext.Consumer>
+                {({ doLogout }) =>
+                    <Button
+                        type="primary"
+                        style={{ backgroundColor: 'inherit' }}
+                        onClick={handleLogout}
+                        loading={isLoggingOut}
+                        icon={<PoweroffOutlined />}>ĐĂNG XUẤT
+                    </Button>
+                }
+            </LogoutContext.Consumer>
+
         </Header>
     )
 }

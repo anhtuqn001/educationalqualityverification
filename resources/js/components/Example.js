@@ -17,16 +17,7 @@ import Assignments from './Assignments/index.js';
 function Example() {
     return (
         <Router>
-            <Switch>
-                {/* <Route path="/dangky">
-                    <SignUpPage />
-                </Route> */}
-                
-                <Route path="/dangnhap">
-                    <LoginPage />
-                </Route>
-                <Route path="/" render={() => <MainPage />} />
-            </Switch>
+            <MainPage />
         </Router>
     );
 }
@@ -36,3 +27,4 @@ export default Example;
 if (document.getElementById('example')) {
     ReactDOM.render(<Example />, document.getElementById('example'));
 }
+
