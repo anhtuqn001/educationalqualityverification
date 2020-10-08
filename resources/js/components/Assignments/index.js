@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+import '../../../../node_modules/antd/dist/antd.css';
 import './index.css';
 import { Transfer, Switch, Tree, Button, Spin, Row, Col, Select, Form, Typography, message } from 'antd';
 import { handleChimucResult, reformatUserChiMucData } from '../utils.js';
@@ -30,8 +30,8 @@ const styles = {
     },
     toolBar: {
         marginLeft: 0,
-        marginRight:0,
-        backgroundColor:'white'
+        marginRight: 0,
+        backgroundColor: 'white'
     },
     colContent: {
         marginBottom: '3px',
@@ -50,7 +50,7 @@ const isChecked = (selectedKeys, eventKey) => selectedKeys.indexOf(eventKey) !==
 
 
 
-const Assignments = () => {
+const Assignments = ({ truongId }) => {
     const [chimucs, setChimucs] = useState([]);
     const [users, setUsers] = useState([]);
     const [nhoms, setNhoms] = useState([]);
@@ -65,7 +65,7 @@ const Assignments = () => {
     const [expandRightKeys, setExpandRightKeys] = useState([]);
 
     useEffect(() => {
-        fetch("/api/chimuc", {
+        fetch("/api/chimuc/" + truongId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
@@ -80,10 +80,13 @@ const Assignments = () => {
             setNhoms([...result.nhoms]);
             setUsers([...result.users]);
             setCurrentNhomId(result.nhoms[0].id);
-            let currentUserId = result.users.filter(i => i.iddonvi == result.nhoms[0].id)[0].id;
-            setCurrentUserId(currentUserId);
-            let currentUser = result.users.filter(i => i.iddonvi == result.nhoms[0].id)[0];
-            setCurrentUser(currentUser);
+            if (result.users.length > 0 && result.users.filter(i => i.iddonvi == result.nhoms[0].id)[0] != null) {
+                let currentUser = result.users.filter(i => i.iddonvi == result.nhoms[0].id)[0];
+                setCurrentUser(currentUser);
+                setCurrentUserId(currentUser.id);
+            }
+            // let currentUser = result.users.filter(i => i.iddonvi == result.nhoms[0].id)[0];
+            // setCurrentUser(currentUser);
             setIsLoading(false);
         }, (error) => {
             if (error.status == 401) {
@@ -94,9 +97,10 @@ const Assignments = () => {
         });
     }, [])
 
+
     useEffect(() => {
         let user = users.find(i => i.id == currentUserId);
-        if(user) {
+        if (user) {
             let { chimucs } = user;
             handleUserChimucs(reformatUserChiMucData(chimucs));
         }
@@ -167,17 +171,16 @@ const Assignments = () => {
     const onExpandAll = (chimucs) => {
         const expandedKeys = [];
         const expandMethod = arr => {
-          arr.forEach(data => {
-            expandedKeys.push(data.key);
-            if (data.children) {
-              expandMethod(data.children);
-            }
-          });
+            arr.forEach(data => {
+                expandedKeys.push(data.key);
+                if (data.children) {
+                    expandMethod(data.children);
+                }
+            });
         };
-        expandMethod(chimucs);  
+        expandMethod(chimucs);
         setExpandRightKeys(expandedKeys);
-        console.log('set expand right keys');
-      };
+    };
 
     const onCollapseAll = () => {
         setExpandRightKeys([]);
@@ -188,7 +191,7 @@ const Assignments = () => {
     }
 
     function handleExpandSwitchChange(checked) {
-        if(checked) {
+        if (checked) {
             onExpandAll(chimucs);
         } else {
             onCollapseAll();
@@ -205,13 +208,13 @@ const Assignments = () => {
     return (
         <React.Fragment>
             <Row style={styles.toolBar} gutter={16}>
-                <Col span={2} offset={12} style={{paddingTop: '5px'}}>
+                <Col span={2} offset={12} style={{ paddingTop: '5px' }}>
                     <Switch defaultChecked onChange={handleExpandSwitchChange}></Switch>
                 </Col>
                 <Col span={4}>
                     {/* <Button type="primary">Expand All</Button> */}
                     <Form.Item label="Nhóm" style={styles.colContent}>
-                        <Select onChange={handleNhomSelectChange} value={currentNhomId} style={{paddingRight: 0}}>
+                        <Select onChange={handleNhomSelectChange} value={currentNhomId} style={{ paddingRight: 0 }}>
                             {!!nhoms.length && nhoms.filter(i => i.loainhom != 1).map(i =>
                                 <Select.Option key={i.id} value={i.id}>{i.tennhom}</Select.Option>
                             )}
@@ -228,7 +231,7 @@ const Assignments = () => {
                     </Form.Item>
                 </Col>
             </Row>
-            <TreeTransfer chimucs={chimucs} nhoms={nhoms} tenUser={getTenUser()} targetsKeys={targetKeys} selectedsKeys={selectedKeys} userId={currentUserId} changeCurrentUserChiMucs={changeCurrentUserChiMucs} expandRightKeys={expandRightKeys} setExpandRightKeysFunc={setExpandRightKeysFunc}/>
+            <TreeTransfer chimucs={chimucs} nhoms={nhoms} tenUser={getTenUser()} targetsKeys={targetKeys} selectedsKeys={selectedKeys} userId={currentUserId} changeCurrentUserChiMucs={changeCurrentUserChiMucs} expandRightKeys={expandRightKeys} setExpandRightKeysFunc={setExpandRightKeysFunc} />
         </React.Fragment>
     );
 };

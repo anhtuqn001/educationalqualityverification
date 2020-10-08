@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
-import { Form, Input, Button, Modal, message, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Button, Modal, message, Row, Col, Checkbox, Alert } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { LogoutContext } from '../Contexts.js';
@@ -24,10 +24,15 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
     const [nhiemvu, setNhiemvu] = useState('');
     const [password, setPassword] = useState('');
     const [isMale, setIsMale] = useState(false);
-    const [isTimkiemminhchung, setIsTimkiemminhchung] = useState(false);
+    const [isTimkiemminhchung, setIsTimkiemminhchung] = useState(true);
     const [isTruongnhom, setIsTruongnhom] = useState(false);
     const history = useHistory();
     const { doLogout } = useContext(LogoutContext);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        console.log('mounted');
+    }, [])
 
     function handleNameInputChange(e) {
         e.preventDefault();
@@ -64,6 +69,14 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
 
     function onIsTimkiemminhchungCheckboxChange(e) {
         setIsTimkiemminhchung(e.target.checked);
+    }
+
+    function handleClose() {
+        handleCloseCreateUserModal();
+        setIsMale(false);
+        setIsTruongnhom(false);
+        setIsTimkiemminhchung(true);
+        setError(null);
     }
 
     // function clearInputs() {
@@ -109,7 +122,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
             })
             .then((result) => {
                 setIsLoading(false);
-                handleCloseCreateUserModal();
+                handleClose();
                 message.success("Tạo thành viên thành công!");
                 appendUser(result.user);
             })
@@ -119,8 +132,9 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                         localStorage.removeItem("token");
                     }
                     doLogout();
+                }else if (error.status == 422) {
+                    setError('Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!');
                 } else {
-                    console.log(error);
                     message.error("Lỗi hệ thống");
                 }
                 setIsLoading(false);
@@ -130,7 +144,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
         <Modal
             title={`Tạo thành viên : ${currentNhom.tennhom}`}
             visible={isOpen}
-            onCancel={handleCloseCreateUserModal}
+            onCancel={handleClose}
             width={600}
             footer={[
                 <Button
@@ -144,7 +158,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                 </Button>,
                 <Button
                     key="back"
-                    onClick={handleCloseCreateUserModal}
+                    onClick={handleClose}
                 >
                     Hủy
                 </Button>,
@@ -246,7 +260,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                             style={{ marginBottom: '5px' }}
                             onChange={handleNhiemvuInputChange}
                         >
-                            <Input />
+                            <Input/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -264,7 +278,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                             style={{ marginBottom: '5px' }}
                             onChange={handlePasswordInputChange}
                         >
-                            <Input type="password" />
+                            <Input type="password" autoComplete="new-password"/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -272,7 +286,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                     <Col span={4}>
                         <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                                checked={isMale}
+                                // checked={isMale}
                                 onChange={onIsMaleCheckboxChange}
                             >
                                 Nam
@@ -282,7 +296,7 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                     <Col span={6}>
                         <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                                checked={isTruongnhom}
+                                // checked={isTruongnhom}
                                 onChange={onIsTruongnhomCheckboxChange}
                             >
                                 Trưởng nhóm
@@ -292,7 +306,8 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                     <Col span={8}>
                         <Form.Item wrapperCol={{ span: 24 }} style={{ marginBottom: '5px' }}>
                             <Checkbox
-                                checked={isTimkiemminhchung}
+                                // checked={isTimkiemminhchung}
+                                defaultChecked={true}
                                 onChange={onIsTimkiemminhchungCheckboxChange}
                             >
                                 Tìm kiếm minh chứng
@@ -300,9 +315,9 @@ const CreateUserModal = ({ isOpen, handleCloseCreateUserModal, currentNhom, appe
                         </Form.Item>
                     </Col>
                 </Row>
-                {/* <Form.Item name="ghichu" label="Ghi chú" style={{marginBottom:'5px'}} onChange={handleGhichuInputChange}>
-                    <Input.TextArea />
-                </Form.Item> */}
+                <Row style={{display:'flex', justifyContent:'center'}}>
+                    {error && !!error.length && <Alert message={error} type="error" showIcon style={{ marginBottom: '10px' }} />}
+                </Row>
             </Form>
         </Modal>
     )

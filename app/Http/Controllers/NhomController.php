@@ -60,4 +60,18 @@ class NhomController extends Controller
         }
         return response()->json([], 200);
     }
+
+    public function getNhomsWithUserMinhChungs($truongId) {
+        try {
+            $truong = Truong::findOrFail($truongId);
+            if($truong != null) {
+                $nhoms = $truong->nhoms()->with(['users.minhchungs.tieuchi'])->get();
+            }
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+       return response()->json(['nhoms' => $nhoms], 200);        
+    }
 }

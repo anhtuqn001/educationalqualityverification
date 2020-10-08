@@ -58,7 +58,6 @@ const EditNhomModal = ({ nhom, isOpen, handleCloseEditNhomModal, changeEditedNho
             manhom,
             tennhom,
             ghichu,
-            truongid: 1,
             _method: 'PUT'
         }
         fetch('/api/nhom', {

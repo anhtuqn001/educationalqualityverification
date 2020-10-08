@@ -11,6 +11,13 @@ import LoginPage from "./LoginPage.js";
 import { LogoutContext } from "./Contexts.js";
 import ManageTasks from './ManageTasks/index.js';
 import CouncilEstablishment from './CouncilEstablishment/index.js';
+import EndReport from './EndReport/index.js';
+import WorkingUsersList from './WorkingUsersList/index.js';
+import CreateSchool from './CreateSchool';
+import SetUpEvidences from './SetUpEvidences/index.js';
+import EvidenceReview from './EvidenceReview/index.js';
+import EvidenceAssignment from './EvidenceAssignment/index.js';
+
 const layout = {
     labelCol: {
         span: 8,
@@ -53,6 +60,7 @@ class MainPage extends React.Component {
             auth: false,
             isTokenValidated: false,
             user: null,
+            truongId: 0,
             isLoaded: false
         }
         this.setAuthFalse = this.setAuthFalse.bind(this);
@@ -85,11 +93,16 @@ class MainPage extends React.Component {
                 })
                 .then((result) => {
                     if (result.success) {
+                        let { user } = result;
+                        let { thuocdonvi, loaidonvi, iddonvi } = user;
+                        let truongId = loaidonvi == "App\\Truong" ? iddonvi : thuocdonvi.truongid; 
                         this.setState({
                             auth: true,
-                            user: result.user
+                            user: result.user,
+                            truongId
                         })
-                        console.log(result.user);
+                        // console.log('user', result.user);
+                        // console.log('truongid', truongId);
                     }
                 })
                 .catch((err) => {
@@ -116,13 +129,14 @@ class MainPage extends React.Component {
     setAuthFalse() {
         this.setState({
             auth: false,
-            user: null
+            user: null,
+            truongId: 0
         })
         this.props.history.push('/');
     }
 
     render() {
-        let { user, auth, isLoaded } = this.state;
+        let { user, auth, isLoaded, truongId } = this.state;
         if (auth) {
             return (
                 <Switch>
@@ -134,20 +148,38 @@ class MainPage extends React.Component {
                                 {/* <div className="site-layout-content">Content</div> */}
                                 <Route exact path="/">
                                     <div style={{display:'flex', justifyContent:'center'}}>
-                                        <img src="/images/intro7.png" alt="introduction" style={{ width: '80%', height: 'auto' }} />
+                                        <img src="/public/images/intro7.png" alt="introduction" style={{ width: '80%', height: 'auto' }} />
                                     </div>
                                 </Route>
                                 <Route path="/creategroup">
-                                    <CreateGroup setAuthFalse={this.setAuthFalse} />
+                                    <CreateGroup truongId={truongId}/>
                                 </Route>
                                 <Route path="/assignments">
-                                    <Assignments setAuthFalse={this.setAuthFalse} />
+                                    <Assignments truongId={truongId}/>
                                 </Route>
                                 <Route path="/managetasks">
-                                    <ManageTasks userId={user.id} />
+                                    <ManageTasks userId={user.id} truongId={truongId}/>
                                 </Route>
                                 <Route path="/councilestablishment">
-                                    <CouncilEstablishment />
+                                    <CouncilEstablishment truongId={truongId}/>
+                                </Route>
+                                <Route path="/endreport">
+                                    <EndReport truongId={truongId}/>
+                                </Route>
+                                <Route path="/createschool">
+                                    <CreateSchool />
+                                </Route>
+                                <Route path="/workinguserslist">
+                                    <WorkingUsersList truongId={truongId} />
+                                </Route>
+                                <Route path="/setupevidences">
+                                    <SetUpEvidences truongId={truongId}/> 
+                                </Route>
+                                <Route path="/evidencereview">
+                                    <EvidenceReview truongId={truongId}/>
+                                </Route>
+                                <Route path="/evidenceassignment">
+                                    <EvidenceAssignment truongId={truongId} />
                                 </Route>
                             </Content>
                             <Footer style={{ textAlign: 'center' }}>Bản quyền Lihanet - 2020</Footer>

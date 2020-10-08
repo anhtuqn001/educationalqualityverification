@@ -137,7 +137,7 @@ const DetailsTable = ({ selectingChimuc }) => {
       _method: 'PUT'
     }
     // console.log(data);
-    fetch('/api/updatechimuctabledetails/', {
+    fetch('/api/updatechimuctabledetails', {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

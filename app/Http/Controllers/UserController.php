@@ -10,6 +10,12 @@ class UserController extends Controller
 {
     public function createUserFromNhom(Request $request) {
         try {
+        $availableUser = User::where('name', '=', $request->input('tendangnhap'))->get(); 
+        if(count($availableUser) > 0) {
+            return response()->json([
+                'user' => $availableUser
+            ], 422);
+        }   
         $nhom = Nhom::findOrFail($request->input('nhomid'));
         $user = new User();
         $user->email = $request->input('email');
@@ -37,6 +43,12 @@ class UserController extends Controller
     public function update(Request $request) {
         try {
             $user = User::findOrFail($request->input('id'));
+            $availableUser = User::where('name', '=', $request->input('tendangnhap'))->get(); 
+            if(count($availableUser) > 0 && $user->name != $request->input('tendangnhap')) {
+                return response()->json([
+                    'user' => $availableUser
+                ], 422);
+            }
             $user->email = $request->input('email');
             $user->name = $request->input('tendangnhap');
             if($request->input('password') != null){

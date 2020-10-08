@@ -52,21 +52,23 @@ const MenuBar = ({ role }) => {
                 icon={<ApartmentOutlined/>} 
                 title="Phân công đánh giá">
                         <Menu.Item key="setting:3" style={styles.menuItem}><Link to="/assignments">Phân công giao việc</Link></Menu.Item>
-                        <Menu.Item key="setting:4" style={styles.menuItem}>In bản phân công</Menu.Item>
+                        <Menu.Item key="setting:4" style={styles.menuItem}><Link to="/workinguserslist">In bản phân công</Link></Menu.Item>
                 </SubMenu>
                 <Menu.Item
                 icon={<CalendarOutlined/>}
                 key="setting:5">Kế hoạch tự đánh giá</Menu.Item>
                 <SubMenu icon={<PaperClipOutlined/>} title="Minh chứng">
-                        <Menu.Item key="setting:6" style={styles.menuItem}>Thiết lập minh chứng</Menu.Item>
-                        <Menu.Item key="setting:7" style={styles.menuItem}>Phân công minh chứng</Menu.Item>
-                        <Menu.Item key="setting:8" style={styles.menuItem}>Bảng danh mục mã minh chứng</Menu.Item>
+                        <Menu.Item key="setting:6" style={styles.menuItem}><Link to="/setupevidences">Thiết lập minh chứng</Link></Menu.Item>
+                        <Menu.Item key="setting:7" style={styles.menuItem}><Link to="/evidencereview">Minh chứng đã phân công</Link></Menu.Item>
+                        <Menu.Item key="setting:8" style={styles.menuItem}><Link to="/evidenceassignment">Minh chứng chưa phân công</Link></Menu.Item>
+                        <Menu.Item key="setting:9" style={styles.menuItem}>Bảng danh mục mã minh chứng</Menu.Item>
                 </SubMenu>
                 <SubMenu icon={<ProfileOutlined/>} title="Báo cáo">
-                        <Menu.Item key="setting:9" style={styles.menuItem}>Mục lục</Menu.Item>
+                        {/* <Menu.Item key="setting:9" style={styles.menuItem}>Mục lục</Menu.Item>
                         <Menu.Item key="setting:10" style={styles.menuItem}>Cơ sở dữ liệu</Menu.Item>
                         <Menu.Item key="setting:11" style={styles.menuItem}>Kế hoạch tự đánh giá</Menu.Item>
-                        <Menu.Item key="setting:12" style={styles.menuItem}>Tổng hợp kết quả tự đánh giá</Menu.Item>
+                        <Menu.Item key="setting:12" style={styles.menuItem}>Tổng hợp kết quả tự đánh giá</Menu.Item> */}
+                        <Menu.Item key="setting:10" style={styles.menuItem}><Link to="/endreport">Báo cáo tự đánh giá</Link></Menu.Item>
                         <Menu.Item key="setting:13" style={styles.menuItem}>Phụ lục 1</Menu.Item>
                         <Menu.Item key="setting:14" style={styles.menuItem}>Phụ lục 2</Menu.Item>
                         <Menu.Item key="setting:15" style={styles.menuItem}>Phụ lục 3</Menu.Item>

@@ -29,6 +29,7 @@ Route::group([
     Route::post('nhom', 'NhomController@store');
     Route::put('nhom', 'NhomController@update');
     Route::delete('nhom/{id}', 'NhomController@destroy');
+    Route::get('nhomswithuserminhchung/{truongId}', 'NhomController@getNhomsWithUserMinhChungs');
 
     //user 
     Route::post('user', 'UserController@createUserFromNhom');
@@ -36,8 +37,9 @@ Route::group([
     Route::delete('user/{id}', 'UserController@destroy');
 
     //chimuc
-    Route::get('chimuc', 'ChiMucController@index');
+    Route::get('chimuc/{truongId}', 'ChiMucController@index');
     Route::get('getchimucfromuser/{userId}', 'ChiMucController@getChiMucFromUser');
+    Route::get('gettieuchi/{truongId}', 'ChiMucController@getTieuchis');
     Route::post('applychimuc', 'ChiMucController@applyChiMucsToUser');
     Route::post('removechimuc', 'ChiMucController@removeChiMucsFromUser');
 
@@ -45,9 +47,21 @@ Route::group([
     Route::get('getchimuctable/{id}', 'ChiMucController@getChimucTableTypeFromUser');
     Route::put('updatechimuctabledetails', 'ChiMucController@updateChimucTableDetails');
     Route::put('updatechimuccontent', 'ChiMucController@updateChimucContent');
+    Route::put('updateketluanContent', 'ChiMucController@updateKetluanContent');
+    Route::put('updatechimucchibaos', 'ChiMucController@updateChimucChibaos');
 
+    //truong
+    Route::post('truong', 'TruongController@store');
+
+    //minhchung
+
+    Route::post('minhchung', 'MinhChungController@importMinhChungs');
+    Route::get('getunassignedminhchungs/{truongId}', 'MinhChungController@getUnassignedMinhchungs');
+    Route::post('assignminhchungs', 'MinhChungController@assignMinhchungsToUsers');
 });
 
 Route::post('login', 'AuthController@doLogin');
 
-Route::get('/exportqdtlhdtdg', 'WordExportController@createQDTLHDTGDDocx');
+Route::get('/exportqdtlhdtdg/{truongId}', 'WordExportController@createQDTLHDTGDDocx');
+Route::get('/exportbctdg/{truongId}', 'WordExportController@createBCTDGDocx');
+Route::get('/exportdstv/{truongId}', 'WordExportController@createDSTVDocx');

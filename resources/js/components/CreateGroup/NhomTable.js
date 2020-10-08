@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Button } from 'antd';
-// import './NhomTable.css';
-
+import './NhomTable.css';
+import { RightSquareOutlined, DownSquareOutlined } from '@ant-design/icons';
 
 const columns = [
     { title: 'Mã nhóm', dataIndex: 'manhom' },
@@ -72,7 +72,7 @@ function NhomTable({ nhoms, isLoading, setCurrentNhomFunc, setCurrentUserFunc, r
         setCurrentNhomFunc(record);
     }
 
-    function removeNhomSelection(){
+    function removeNhomSelection() {
         setSelectedNhomRowKey([]);
         removeCurrentNhom();
     }
@@ -85,42 +85,69 @@ function NhomTable({ nhoms, isLoading, setCurrentNhomFunc, setCurrentUserFunc, r
 
     return (
         <React.Fragment>
-        <Table
-            columns={columns}
-            expandable={{
-                expandedRowRender: record => <UserTable record={record} removeNhomSelection={removeNhomSelection} removeUserSelection={removeUserSelection} selectedRowKey={record.key == selectedRowKeyArr[0] ? selectedRowKeyArr[1] : null} selectUserRow={selectUserRow} />,
-                rowExpandable: record => record.users.length > 0,
-                indentSize: 30
-            }}
-            dataSource={nhoms.length > 0 ? nhoms.map((item, index) => {
-                return {
-                    key: index,
-                    ...item
-                }
-            }) : null}
-            bordered={true}
-            pagination={false}
-            loading={isLoading}
-            style={{ flexGrow: 8 }}
-            rowSelection={{
-                selectedRowKeys: selectedNhomRowKey,
-                type: 'radio',
-                onSelect: function (record) {
-                    selectNhomRow(record);
-                }
-            }}
-            onRow={(record) => ({
-                onClick: () => {
-                    selectNhomRow(record);
-                },
-                onContextMenu: (e) => {
-                    e.preventDefault();
-                    removeNhomSelection();
-                    removeUserSelection()
-                }
-            })}
-            style={{marginTop: '5px'}}
-        />
+            <Table
+                columns={columns}
+                expandable={{
+                    expandedRowRender: record => <UserTable record={record} removeNhomSelection={removeNhomSelection} removeUserSelection={removeUserSelection} selectedRowKey={record.key == selectedRowKeyArr[0] ? selectedRowKeyArr[1] : null} selectUserRow={selectUserRow} />,
+                    // rowExpandable: record => record.users.length > 0,
+                    indentSize: 30,
+                    expandIcon: ({ expanded, onExpand, record }) => {
+                        if (record.users.length > 0) {
+                            return expanded ? (
+                                <DownSquareOutlined
+                                onClick={e => {
+                                    e.stopPropagation(); 
+                                    onExpand(record, e)
+                                }}
+                                style={{
+                                    fontSize: 20
+                                }}
+                                />
+                            ) : (
+                                <RightSquareOutlined
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    onExpand(record, e)
+                                }}
+                                style={{
+                                    fontSize: 20
+                                }}
+                                />
+                                )
+                        }
+                        // return '';
+                    }
+
+                }}
+                dataSource={nhoms.length > 0 ? nhoms.map((item, index) => {
+                    return {
+                        key: index,
+                        ...item
+                    }
+                }) : null}
+                bordered={true}
+                pagination={false}
+                loading={isLoading}
+                style={{ flexGrow: 8 }}
+                rowSelection={{
+                    selectedRowKeys: selectedNhomRowKey,
+                    type: 'radio',
+                    onSelect: function (record) {
+                        selectNhomRow(record);
+                    }
+                }}
+                onRow={(record) => ({
+                    onClick: () => {
+                        selectNhomRow(record);
+                    },
+                    onContextMenu: (e) => {
+                        e.preventDefault();
+                        removeNhomSelection();
+                        removeUserSelection()
+                    }
+                })}
+                style={{ marginTop: '5px' }}
+            />
         </React.Fragment>
     )
 }

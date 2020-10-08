@@ -25,9 +25,17 @@ const styles = {
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
-    paddingTop: '160px'
+    paddingTop: '80px'
+  },
+  img: {
+    // maxHeight: '50%',
+    // width: 'auto',
+    maxWidth: '100%',
+    height: 'auto',
+    marginRight: '7px'
   }
 }
+
 
 const LoginPage = ({ getUserInfo }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,52 +89,70 @@ const LoginPage = ({ getUserInfo }) => {
       // align="bottom"
       style={styles.container}
     >
-      <Col span={6}>
-        <Form
-          name="normal_login"
-          className="login-form"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-        >
-          <Form.Item
-            name="tendangnhap"
-            rules={[
-              {
-                required: true,
-                message: 'Tên đăng nhập không được bỏ trống!',
-              },
-            ]}
+      <Row style={{ 
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+      }}>
+        <Col span={10}>
+        <img src="/public/images/nendangnhap4.png"
+          alt="logo"
+          style={styles.img}
+        />
+        </Col>
+      </Row>
+      <Row style={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+      }}>
+        <Col span={6}>
+          <Form
+            name="normal_login"
+            className="login-form"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
           >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Tên đăng nhập" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: 'Mật khẩu không được bỏ trống!',
-              },
-            ]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Mật khẩu"
-            />
-          </Form.Item>
-          {/* <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Form.Item
+              name="tendangnhap"
+              rules={[
+                {
+                  required: true,
+                  message: 'Tên đăng nhập không được bỏ trống!',
+                },
+              ]}
+            >
+              <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Tên đăng nhập" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Mật khẩu không được bỏ trống!',
+                },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Mật khẩu"
+              />
+            </Form.Item>
+            {/* <Form.Item name="remember" valuePropName="checked" noStyle>
           <Checkbox>Remember me</Checkbox>
         </Form.Item> */}
-            {errorMessage && !!errorMessage.length && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: '10px'}}/>}
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button" block loading={isSubmitting}>
-              Đăng Nhập
+            {errorMessage && !!errorMessage.length && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: '10px' }} />}
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="login-form-button" block loading={isSubmitting}>
+                Đăng Nhập
             </Button>
-          </Form.Item>
-        </Form>
-      </Col>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
     </Row>
   );
 };

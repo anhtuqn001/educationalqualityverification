@@ -16,7 +16,7 @@ const layout = {
     },
 };
 
-const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom }) => {
+const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom, truongId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [manhom, setManhom] = useState('');
     const [tennhom, setTennhom] = useState('');
@@ -48,7 +48,7 @@ const CreateNhomModal = ({ isOpen, handleCloseCreateNhomModal, appendNhom }) => 
             manhom,
             tennhom,
             ghichu,
-            truongid: 1
+            truongid: truongId
         }
         console.log(data);
         fetch('/api/nhom', {

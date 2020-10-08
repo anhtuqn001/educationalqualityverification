@@ -79,7 +79,7 @@ const CustomHeader = ({ tendangnhap }) => {
                         <Menu.Item key="2">nav 2</Menu.Item>
                         <Menu.Item key="3">nav 3</Menu.Item>
                     </Menu> */}
-            <img src="/images/logo2.png" alt="logo" style={styles.img} />
+            <img src="/public/images/logo2.png" alt="logo" style={styles.img} />
             <Title level={3} style={styles.title}>PHẦN MỀM KIỂM ĐỊNH CHẤT LƯỢNG GIÁO DỤC</Title>
             <Text style={{ marginLeft: 'auto', marginRight: '10px', color: 'white' }}>Xin chào, {tendangnhap}</Text>
             <LogoutContext.Consumer>

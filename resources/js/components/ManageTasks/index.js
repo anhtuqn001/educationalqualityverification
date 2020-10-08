@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.css';
+import '../../../../node_modules/antd/dist/antd.css';
 import { Tree, Row, Col, message, Spin, Button } from 'antd';
 import { generateTree, handleChimucResult, reformatUserChiMucData } from '../utils.js';
 import DetailsTable from './Table.js';
 import { applyKeyPropertyForArrItem } from '../utils';
 import { LogoutContext } from '../Contexts';
 import TextEditor from './TextEditor';
+import TextEditor1 from './TextEditor1';
 import TieuchiComponent from './TieuchiComponent.js';
+import TieuchuanComponent from './TieuchuanComponent.js';
+import KetLuanComponent from './KetluanComponent.js';
+import EmptyComponent from './EmptyComponent.js';
 import './index.css';
 const styles = {
     container: {
@@ -43,6 +47,7 @@ const ManageTasks = ({ userId }) => {
                 return response.json();
             })
             .then((result) => {
+                console.log('result.userChimucs', result.userchimucs);
                 let handledChimucResult = [...handleChimucResult(result.chimucs, '0-')];
                 setChimucs(handledChimucResult);
                 onExpandAll(handledChimucResult);
@@ -128,6 +133,13 @@ const ManageTasks = ({ userId }) => {
         userChimucs[chimucIndex].content = content;
         setUserChimucs([...userChimucs]);
     }
+
+    const updateKetluanContent = (chimucId, content, content2) => {
+        let chimucIndex = userChimucs.findIndex(i => i.id == chimucId);
+        userChimucs[chimucIndex].content = content;
+        userChimucs[chimucIndex].content2 = content2;
+        setUserChimucs([...userChimucs]);
+    }
  
     const test = () => {
         fetch('/api/getchimuctable/' + userId, {
@@ -169,17 +181,26 @@ const ManageTasks = ({ userId }) => {
     }
 
     const getCorrespondingComponent = (loaichimuc) => {
+        if(loaichimuc == 6 && selectingChimuc.columns.length > 0) {
+            return <DetailsTable selectingChimuc={selectingChimuc} />;
+        }
         switch(loaichimuc) {
+            case 0:
+                return <EmptyComponent selectingChimuc={selectingChimuc}/>;
             case 1:
-                return <TextEditor selectingChimuc={selectingChimuc} updateChimucContent={updateChimucContent}/>;
+                return <TextEditor1 selectingChimuc={selectingChimuc} updateChimucContent={updateChimucContent}/>;
             case 2:
                 return <DetailsTable selectingChimuc={selectingChimuc} />;
             case 3:
-                return <DetailsTable selectingChimuc={selectingChimuc} />;
+                return <EmptyComponent selectingChimuc={selectingChimuc}/>;
             case 4:
-                return <TieuchiComponent selectingChimuc={selectingChimuc} />
+                return <TieuchiComponent selectingChimuc={selectingChimuc}/>;
             case 5:
-                return <DetailsTable selectingChimuc={selectingChimuc} />;
+                return <KetLuanComponent selectingChimuc={selectingChimuc}/>;
+            // case 5: 
+            //     return <TextEditor1 selectingChimuc={selectingChimuc} updateChimucContent={updateChimucContent}/>
+            case 6: 
+                return <EmptyComponent selectingChimuc={selectingChimuc}/>;
         }
     }
     return (
@@ -192,6 +213,7 @@ const ManageTasks = ({ userId }) => {
                     onSelect={onSelect}
                     treeData={generateTree(chimucs, true, targetKeys, selectedKeys)}
                     blockNode={true}
+                    height={600}
                 />
             </Col>
             <Col span={14}>

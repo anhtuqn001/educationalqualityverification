@@ -11,4 +11,12 @@ class Nhom extends Model
     public function users() {
         return $this->morphMany('App\User', 'thuocdonvi', 'loaidonvi', 'iddonvi')->orderBy('isTruongnhom', 'DESC');
     }
+
+
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($nhom) { // before delete() method call this
+            $nhom->users()->delete();
+        });
+    }
 }

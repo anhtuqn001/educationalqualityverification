@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
-import { Form, Input, Button, Modal, message, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Button, Modal, message, Row, Col, Checkbox, Alert } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { LogoutContext } from '../Contexts.js';
@@ -28,6 +28,7 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
     const [isTruongnhom, setIsTruongnhom] = useState(false);
     const history = useHistory();
     const { doLogout } = useContext(LogoutContext);
+    const [error, setError] = useState(null);
 
     function handleNameInputChange(e) {
         e.preventDefault();
@@ -74,6 +75,7 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
         setIsMale(user.isMale == "Nam");
         setIsTruongnhom(user.isTruongnhom == 1);
         setIsTimkiemminhchung(user.isTimkiemminhchung == 1);
+        setError(null);
     }, [JSON.stringify(user)])
 
     function handleSubmit() {
@@ -109,7 +111,7 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
             })
             .then((result) => {
                 setIsLoading(false);
-                handleCloseEditUserModal();
+                handleClose();
                 message.success("Cập nhật thành viên thành công!")
                 changeEditedUser(result.user);
             })
@@ -120,18 +122,24 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
                     }
                     // history.push('/dangnhap');
                     doLogout();
+                } else if (error.status == 422) {
+                    setError('Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!');
                 } else {
-                    console.log(error);
                     message.error("Lỗi hệ thống");
                 }
                 setIsLoading(false);
             });
     }
+
+    const handleClose = () => {
+        handleCloseEditUserModal();
+        setError(null)
+    }
     return (
         <Modal
             title={`Cập nhật thành viên : ${user.hoten}`}
             visible={isOpen}
-            onCancel={handleCloseEditUserModal}
+            onCancel={handleClose}
             width={600}
             footer={[
                 <Button
@@ -145,7 +153,7 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
                 </Button>,
                 <Button
                     key="back"
-                    onClick={handleCloseEditUserModal}
+                    onClick={handleClose}
                 >
                     Hủy
                 </Button>,
@@ -271,7 +279,7 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
                             style={{ marginBottom: '5px' }}
                             onChange={handlePasswordInputChange}
                         >
-                            <Input type="password" />
+                            <Input type="password"  autoComplete="new-password"/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -306,6 +314,9 @@ const EditUserModal = ({ user, isOpen, handleCloseEditUserModal, changeEditedUse
                             </Checkbox>
                         </Form.Item>
                     </Col>
+                </Row>
+                <Row style={{display:'flex', justifyContent:'center'}}>
+                    {error && !!error.length && <Alert message={error} type="error" showIcon style={{ marginBottom: '10px' }} />}
                 </Row>
             </Form>
         </Modal>

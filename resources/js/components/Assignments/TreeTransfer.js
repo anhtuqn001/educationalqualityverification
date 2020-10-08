@@ -95,7 +95,6 @@ const TreeTransfer = ({ chimucs, tenUser, targetsKeys, selectedsKeys, userId, ch
                     })
                     .then((result) => {
                         changeCurrentUserChiMucs(result.chimucs);
-                        console.log(result.halfchimucs);
                     })
                     .catch((error) => {
                     if(error.status == 401) {

@@ -60,6 +60,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\ChiMuc', 'user_chimuc', 'userid', 'chimucid');
     }
 
+    public function minhchungs() {
+        return $this->belongsToMany('App\MinhChung', 'user_minhchung', 'userid', 'minhchungid');
+    }
+
     public function applyChiMucs() {
         $this->chimucs = $this->chimucsWithPivot;
     }
@@ -84,11 +88,13 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getTruongId() {
+        $truongId = $this->loaidonvi == "App\\Truong" ? $this->iddonvi : $this->thuocdonvi->truongid;
+        return $truongId;
+    }
+
     // public function chimucWithTable() {
 
     // }
-
-    
-
     
 }

@@ -43,7 +43,7 @@ const styles = {
     }
 }
 
-const CreateGroup = ({ setAuthFalse }) => {
+const CreateGroup = ({ truongId }) => {
     const [nhoms, setNhoms] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCreateNhomModalOpen, setIsCreateNhomModalOpen] = useState(false);
@@ -57,7 +57,7 @@ const CreateGroup = ({ setAuthFalse }) => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch("/api/nhom/1", {
+        fetch("/api/nhom/" + truongId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
@@ -208,8 +208,8 @@ const CreateGroup = ({ setAuthFalse }) => {
             <NhomTable nhoms={nhoms} isLoading={isLoading} setCurrentNhomFunc={setCurrentNhomFunc} removeCurrentNhom={removeCurrentNhom} removeCurrentUser={removeCurrentUser} setCurrentUserFunc={setCurrentUserFunc} />
             <div style={styles.plusIconContainer}>
             </div>
-            <CreateNhomModal isOpen={isCreateNhomModalOpen} handleCloseCreateNhomModal={handleCloseCreateNhomModal} appendNhom={appendNhom} />
-            <EditNhomModal nhom={currentNhom} isOpen={isEditNhomModalOpen} handleCloseEditNhomModal={handleCloseEditNhomModal} changeEditedNhom={changeEditedNhom} />
+            <CreateNhomModal isOpen={isCreateNhomModalOpen} handleCloseCreateNhomModal={handleCloseCreateNhomModal} appendNhom={appendNhom} truongId={truongId}/>
+            <EditNhomModal nhom={currentNhom} isOpen={isEditNhomModalOpen} handleCloseEditNhomModal={handleCloseEditNhomModal} changeEditedNhom={changeEditedNhom}/>
             <CreateUserModal isOpen={isCreateUserModalOpen} handleCloseCreateUserModal={handleCloseCreateUserModal} currentNhom={currentNhom} appendUser={appendUser} />
             <EditUserModal isOpen={isEditUserModalOpen} user={currentUser} handleCloseEditUserModal={handleCloseEditUserModal} changeEditedUser={changeEditedUser} />
         </div>
