@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\MinhChung;
 use App\Truong;
+use App\ExportMinhchung;
 
 class MinhChungController extends Controller
 {
@@ -16,7 +17,6 @@ class MinhChungController extends Controller
             $truong->removeAvailableMinhChungs();
         }
         $minhchungs = $request->input('minhchungs');
-        $arrayTest = array();
         foreach($minhchungs as $minhchung) {
            $newMinhChung = new MinhChung;
            $newMinhChung->maminhchung = $minhchung['maminhchung'];
@@ -27,7 +27,6 @@ class MinhChungController extends Controller
            $newMinhChung->thutu = $minhchung['thutu'];
            $newMinhChung->sotieuchi = $minhchung['sotieuchi'];
            $newMinhChung->tieuchiid = $minhchung['tieuchiid'];
-        //    array_push($arrayTest, $minhchung['maminhchung'];)
            $newMinhChung->save();
            if(count($minhchung['users']) > 0) {
             $newMinhChung->users()->sync($minhchung['users']);
@@ -35,6 +34,18 @@ class MinhChungController extends Controller
            if(count($minhchung['referenceTieuchis']) > 0) {
             $newMinhChung->tieuchis()->sync($minhchung['referenceTieuchis']);
            }
+        }
+        $exportMinhchungs = $request->input('exportMinhchungs');
+        foreach($exportMinhchungs as $exportMinhchung) {
+            $newExportMinhchung = new ExportMinhchung;
+            $newExportMinhchung->thutu = $exportMinhchung['thutu'];
+            $newExportMinhchung->maminhchung = $exportMinhchung['maminhchung'];
+            $newExportMinhchung->tenminhchung = $exportMinhchung['tenminhchung'];
+            $newExportMinhchung->songaybanhanh = $exportMinhchung['songaybanhanh'];
+            $newExportMinhchung->noibanhanh = $exportMinhchung['noibanhanh'];
+            $newExportMinhchung->ghichu = $exportMinhchung['ghichu'];
+            $newExportMinhchung->tieuchiid = $exportMinhchung['tieuchiid'];
+            $newExportMinhchung->save();   
         }
             $truong1 = Truong::findOrFail($request->input('truongId'));
             $tieuchis = $truong1->tieuchis;

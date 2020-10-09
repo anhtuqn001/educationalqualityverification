@@ -65,3 +65,4 @@ Route::post('login', 'AuthController@doLogin');
 Route::get('/exportqdtlhdtdg/{truongId}', 'WordExportController@createQDTLHDTGDDocx');
 Route::get('/exportbctdg/{truongId}', 'WordExportController@createBCTDGDocx');
 Route::get('/exportdstv/{truongId}', 'WordExportController@createDSTVDocx');
+Route::get('/exportdmmc/{truongId}', 'WordExportController@createDMMCDocx');

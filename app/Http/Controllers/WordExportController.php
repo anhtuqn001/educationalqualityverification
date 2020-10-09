@@ -985,4 +985,71 @@ class WordExportController extends Controller
         }
         return response()->download(storage_path($wordFileName));
         }
+
+    public function createDMMCDocx($truongId) {
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+
+        $truong = Truong::findOrFail($truongId);
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(13);
+
+        $section = $phpWord->addSection([
+            'orientation' => 'landscape',
+            'marginLeft' => 500,
+            'marginRight' => 500,
+        ]);
+        
+        $section->addText('PHẦN IV', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addText('PHỤ LỤC: BẢNG DANH MỤC MINH CHỨNG', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        $fancyTableStyleName = 'Fancy Table';
+        $fancyTableStyle = array('alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'borderSize' => 1, 'borderColor' => '000000');
+        $phpWord->addTableStyle($fancyTableStyleName, $fancyTableStyle);
+        $table = $section->addTable($fancyTableStyleName);
+        $table->addRow(400);
+        $table->addCell(1000, ['valign' => 'center'])->addText('Tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(1000, ['valign' => 'center'])->addText('Số TT', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3000, ['valign' => 'center'])->addText('Mã minh chứng', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(6000, ['valign' => 'center'])->addText('Tên minh chứng', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3600, ['valign' => 'center'])->addText('Số, ngày ban hành hoặc thời điểm khảo sát, điều tra, phỏng vấn, quan sát,...', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3600, ['valign' => 'center'])->addText('Nơi ban hành hoặc nhóm, cá nhân thực hiện', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(1800, ['valign' => 'center'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        
+        $tieuchis = $truong->tieuchis;
+
+        if(count($tieuchis) > 0) {
+            foreach($tieuchis as $tieuchi) {
+                $tieuchiShortName = explode(':', $tieuchi->tenchimuc)[0];
+                $counter = 0;
+                if(count($tieuchi->exportminhchungs) > 0) {
+                    foreach($tieuchi->exportminhchungs as $minhchung) {
+                        $table->addRow(400);
+                        if($counter == 0) {
+                            $table->addCell(1200, ['valign' => 'center', 'vMerge' => 'restart'])->addText($tieuchiShortName, ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        } else {
+                            $table->addCell(1200, ['valign' => 'center', 'vMerge' => 'continue'])->addText('', null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        }
+                        $table->addCell(1200, ['valign' => 'center'])->addText($minhchung->thutu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $table->addCell(3600, ['valign' => 'center'])->addText($minhchung->maminhchung, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $table->addCell(7200, ['valign' => 'center'])->addText($minhchung->tenminhchung, null, ['indent' => 0.1, 'spaceAfter' => 0]);
+                        $table->addCell(4320, ['valign' => 'center'])->addText($minhchung->songaybanhanh, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $table->addCell(4320, ['valign' => 'center'])->addText($minhchung->noibanhanh, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $table->addCell(2160, ['valign' => 'center'])->addText($minhchung->ghichu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $counter++;
+                    }
+                }
+            }
+        }
+        
+        $wordFileName = 'DMMC' . $truongId . '.docx' ;
+        $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objectWriter->save(storage_path($wordFileName));
+            } catch (Exception $e) {
+        }
+        return response()->download(storage_path($wordFileName));
+    }
 }

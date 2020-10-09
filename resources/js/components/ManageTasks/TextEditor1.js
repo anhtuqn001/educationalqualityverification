@@ -114,6 +114,7 @@ function TextEditor1({ selectingChimuc }) {
                 onInit={editor => {
                     // You can store the "editor" and use when it is needed.
                     console.log('Editor is ready to use!', editor);
+                    console.log(Array.from( editor.ui.componentFactory.names()));
                 }}
                 config={editorConfiguration}
                 onChange={handleEditorChange1}

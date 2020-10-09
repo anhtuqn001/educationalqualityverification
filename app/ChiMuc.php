@@ -44,6 +44,10 @@ class ChiMuc extends Model
         return $this->belongsToMany('App\MinhChung', 'tieuchi_minhchungthamkhao', 'tieuchiid', 'minhchungid');
     }
 
+    public function exportminhchungs() {
+        return $this->hasMany("App\ExportMinhchung", "tieuchiid");
+    }
+
     public function getUnassignedMinhchungs() {
         $unAssignedMinhchungs = $this->minhchungs->filter(function ($minhchung) {
                 return $minhchung->isUnassigned(); 
@@ -221,6 +225,17 @@ class ChiMuc extends Model
     public function getMinhChungIds() {
         if($this->minhchungs()->count() > 0) {
            $minhchungs = $this->minhchungs;
+           $minhchungIdArr = $minhchungs->map(function($item) {
+                return $item->id;
+            });
+            return $minhchungIdArr;
+        }
+        return [];
+    }
+
+    public function getExportMinhChungIds() {
+        if($this->exportminhchungs()->count() > 0) {
+           $minhchungs = $this->exportminhchungs;
            $minhchungIdArr = $minhchungs->map(function($item) {
                 return $item->id;
             });

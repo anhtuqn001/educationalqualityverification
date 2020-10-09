@@ -42,11 +42,9 @@ function TieuchiComponent({ selectingChimuc }) {
 
     useEffect(() => {
         setSelectedChimuc(selectingChimuc);
+        console.log('selectingChimuc', selectingChimuc);
         setCurrentChibao(null);
     }, [selectingChimuc])
-
-    useEffect(() => {
-    }, [selectedChimuc])
 
 
     // const handleEditorChange = (content, delta, source, editor) => {

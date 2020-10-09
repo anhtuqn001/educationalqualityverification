@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useContext } from 'react';
 import { OutTable, ExcelRenderer } from 'react-excel-renderer';
-import { handleMinhchungRawData, assignMinhchungToTieuchiAndUser, generateMinhChungsTreeData } from '../utils.js';
+import { handleMinhchungRawData, assignMinhchungToTieuchiAndUser, generateMinhChungsTreeData, handleMinhchungRawDataToExportData } from '../utils.js';
 import { LogoutContext } from '../Contexts.js';
 import { message, Spin, Upload, Row, Col, Tree, Button, Table } from 'antd';
 import { Loading3QuartersOutlined, InboxOutlined, StopOutlined } from '@ant-design/icons';
@@ -94,6 +94,7 @@ const SetUpEvidences = ({ truongId }) => {
         }))
         totalMinhchungs = [...totalMinhchungs, ...minhchungs];
       })
+      console.log(appliedMaTieuchis);
       setTieuchis(appliedMaTieuchis);
       setMinhchungs(totalMinhchungs);
     }).catch((error) => {
@@ -124,10 +125,12 @@ const SetUpEvidences = ({ truongId }) => {
           setRows(resp.rows);
           let minhchungRawDatas = resp.rows;
           minhchungRawDatas.shift();
+          let exportMinhchungData = handleMinhchungRawDataToExportData([...minhchungRawDatas], tieuchis)
           let minhchungHandledDatas = handleMinhchungRawData(minhchungRawDatas);
           minhchungHandledDatas = assignMinhchungToTieuchiAndUser(tieuchis, minhchungHandledDatas);
           let data = {
             minhchungs: minhchungHandledDatas,
+            exportMinhchungs : exportMinhchungData,
             truongId
           };
           fetch('/api/minhchung', {

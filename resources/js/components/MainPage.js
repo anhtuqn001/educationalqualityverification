@@ -17,6 +17,7 @@ import CreateSchool from './CreateSchool';
 import SetUpEvidences from './SetUpEvidences/index.js';
 import EvidenceReview from './EvidenceReview/index.js';
 import EvidenceAssignment from './EvidenceAssignment/index.js';
+import EvidenceList from './EvidenceList/index.js';
 
 const layout = {
     labelCol: {
@@ -180,6 +181,9 @@ class MainPage extends React.Component {
                                 </Route>
                                 <Route path="/evidenceassignment">
                                     <EvidenceAssignment truongId={truongId} />
+                                </Route>
+                                <Route path="/evidencelist">
+                                    <EvidenceList truongId={truongId} />
                                 </Route>
                             </Content>
                             <Footer style={{ textAlign: 'center' }}>Bản quyền Lihanet - 2020</Footer>

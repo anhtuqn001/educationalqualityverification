@@ -8926,6 +8926,36 @@ export const handleMinhchungRawData = (rawDatas) => {
     return handleData2;
 };
 
+export const handleMinhchungRawDataToExportData = (rawDatas, tieuchis) => {
+    let handledData1 = rawDatas.map(i => ({
+        thutu: i[1] == undefined ? null : i[1],
+        maminhchung: i[2] == undefined ? null : i[2],
+        tenminhchung: i[3] == undefined ? null : i[3],
+        songaybanhanh: i[4] == undefined ? null : i[4],
+        noibanhanh: i[5] == undefined ? null : i[5],
+        ghichu: i[6] == undefined ? null : i[6],
+        matieuchi: i[0] == undefined ? null : getMaTieuChi(i[0]),
+    }))
+    let matieuchiArr = handledData1.map(i => i.matieuchi);
+    let handleData2 = handledData1.map((i, index) => ({
+        ...i,
+        matieuchi: i.matieuchi == null ? findNearestTieuchi(matieuchiArr, index) : i.matieuchi
+    }))
+
+    handleData2 = handleData2.map(i => {
+        let tieuchi = tieuchis.find(j => j.matieuchi == i.matieuchi);
+        let tieuchiid;
+        if(tieuchi) {
+            tieuchiid = tieuchi.id
+        }
+        return {
+            ...i,
+            tieuchiid
+        }
+    })
+    return handleData2;
+};
+
 const getMaTieuChi = (tentieuchi) => {
     if (tentieuchi.length > 0) {
         let tentieuchiArr = tentieuchi.split(' ');
@@ -8983,14 +9013,17 @@ export const assignMinhchungToTieuchiAndUser = (tieuchis, minhchungs) => {
             referenceTieuchis: []
         }
     });
+    let uniqueMinhChungs = Array.from(new Set(minhchungs.map(i => i.maminhchung))).map(maminhchung => {
+        return minhchungs.find(i => i.maminhchung == maminhchung);
+    });
     referenceMinhchungs.forEach(i => {
         let { matieuchi, maminhchung } = i;
-        let minhchung = minhchungs.find(j => j.maminhchung == maminhchung);
-        if (minhchung) {
+        let minhchung = uniqueMinhChungs.find(j => j.maminhchung == maminhchung);
+        if (minhchung && !minhchung.referenceTieuchis.includes(matieuchi)) {
             minhchung.referenceTieuchis.push(matieuchi);
         }
     });
-    return minhchungs;
+    return uniqueMinhChungs;
 }
 
 export const generateMinhChungsTreeData = (tieuchis) => {

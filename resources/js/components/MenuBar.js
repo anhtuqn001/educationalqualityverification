@@ -61,7 +61,7 @@ const MenuBar = ({ role }) => {
                         <Menu.Item key="setting:6" style={styles.menuItem}><Link to="/setupevidences">Thiết lập minh chứng</Link></Menu.Item>
                         <Menu.Item key="setting:7" style={styles.menuItem}><Link to="/evidencereview">Minh chứng đã phân công</Link></Menu.Item>
                         <Menu.Item key="setting:8" style={styles.menuItem}><Link to="/evidenceassignment">Minh chứng chưa phân công</Link></Menu.Item>
-                        <Menu.Item key="setting:9" style={styles.menuItem}>Bảng danh mục mã minh chứng</Menu.Item>
+                        {/* <Menu.Item key="setting:9" style={styles.menuItem}><Link to="/evidencelist">Bảng danh mục mã minh chứng</Link></Menu.Item> */}
                 </SubMenu>
                 <SubMenu icon={<ProfileOutlined/>} title="Báo cáo">
                         {/* <Menu.Item key="setting:9" style={styles.menuItem}>Mục lục</Menu.Item>
@@ -72,7 +72,7 @@ const MenuBar = ({ role }) => {
                         <Menu.Item key="setting:13" style={styles.menuItem}>Phụ lục 1</Menu.Item>
                         <Menu.Item key="setting:14" style={styles.menuItem}>Phụ lục 2</Menu.Item>
                         <Menu.Item key="setting:15" style={styles.menuItem}>Phụ lục 3</Menu.Item>
-                        <Menu.Item key="setting:16" style={styles.menuItem}>Phụ lục 4</Menu.Item>
+                        <Menu.Item key="setting:16" style={styles.menuItem}><Link to="/evidencelist">Phụ lục 4 - Bảng danh mục mã minh chứng</Link></Menu.Item>
                         <Menu.Item key="setting:17" style={styles.menuItem}>Phụ lục 5</Menu.Item>
                 </SubMenu>
                 {/* <Menu.Item key="1">nav 1</Menu.Item>

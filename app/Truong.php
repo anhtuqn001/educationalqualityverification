@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\MinhChung;
+use App\ExportMinhchung;
 
 class Truong extends Model
 {
@@ -83,7 +84,9 @@ class Truong extends Model
         if(count($tieuchis) > 0) {
             foreach($tieuchis as $tieuchi) {
                 $minhchungIdArr = $tieuchi->getMinhChungIds();
-                MinhChung::destroy($minhchungIdArr);     
+                MinhChung::destroy($minhchungIdArr);
+                $exportMinhchungIdArr = $tieuchi->getExportMinhChungIds();
+                ExportMinhchung::destroy($exportMinhchungIdArr);
             }
             return;
         }
