@@ -15,6 +15,11 @@ class Truong extends Model
         return $this->hasMany('App\Nhom', 'truongid')->orderBy('loainhom', 'DESC');
     }
 
+    public function nhomsWithUsers()
+    {
+        return $this->hasMany('App\Nhom', 'truongid')->with('users');
+    }
+
     public function chimucs() 
     {
         return $this->hasMany('App\ChiMuc', 'truongid');
@@ -24,7 +29,21 @@ class Truong extends Model
         return $this->chimucs()->where('loaichimuc', 4)->with(['users', 'minhchungs.tieuchis', 'minhchungthamkhaos']);
     }
 
+    public function users() {
+        return $this->hasManyThrough(User::class, Nhom::class, 'truongid', 'iddonvi')->where('loaidonvi', Nhom::class);
+    }
+
+    public function tieuchuans() {
+        return $this->chimucs()->where('loaichimuc', 3)->with('tieuchis');
+    }
     
+    public function tieuchuansWithChibaos() {
+        return $this->chimucs()->where('loaichimuc', 3)->with('tieuchis.chibaos');
+    }
+
+    public function kehoach() {
+        return $this->hasOne('App\KeHoachTDG', 'truongid');
+    }
 
     public function getUnassignedMinhChungs() {
         $testArr = [];
@@ -36,9 +55,7 @@ class Truong extends Model
         return $testArr;
     }
 
-    public function users() {
-        return $this->hasManyThrough(User::class, Nhom::class, 'truongid', 'iddonvi')->where('loaidonvi', Nhom::class);
-    }
+    
 
     public function calculateDatmuc() {
         $tieuchuans = $this->chimucs->where('loaichimuc', 3);

@@ -36,6 +36,7 @@ function TieuchiComponent({ selectingChimuc }) {
     const [currentChibao, setCurrentChibao] = useState(null);
     const [selectedChimuc, setSelectedChimuc] = useState(null);
     const [currentText, setCurrentText] = useState("");
+    const [editor, setEditor] = useState(null);
     useEffect(() => {
         console.log(selectingChimuc);
     }, [])
@@ -76,7 +77,7 @@ function TieuchiComponent({ selectingChimuc }) {
             setSelectedChimuc({ ...selectingChimuc });
             console.log('selectingChimuc', selectingChimuc);
             console.log('selectedChimuc', selectedChimuc);
-            console.log('dâta', data);
+            console.log('data', data);
         }
         }
     }
@@ -134,6 +135,13 @@ function TieuchiComponent({ selectingChimuc }) {
                 setCurrentChibao(currentChibao);
             }
         }
+    }
+
+    const handleSelectMinhchung = (val) => {
+        // console.log('val', val);
+        editor.model.change( writer => {
+            writer.insertText( val, editor.model.document.selection.getFirstPosition() );
+        } );
     }
 
     // useEffect(() => {
@@ -285,11 +293,27 @@ function TieuchiComponent({ selectingChimuc }) {
                         <Col span={7}>
                             Chỉ báo này có đạt mức {currentChibao.thuocmuc} ?
                         </Col>
-                        <Col span={10}>
+                        <Col span={7}>
                             <Radio.Group value={currentChibao.isOk} onChange={handleDanhgiaChibaoChange}>
                                 <Radio value={0}>Không</Radio>
                                 <Radio value={1}>Có</Radio>
                             </Radio.Group>
+                        </Col>
+                        <Col span={8} offset={2}>
+                        <Form.Item label="Minh chứng" style={{ marginBottom: '0px', paddingBottom: '0px'}}>
+                            <Select
+                                // onChange={handleSelectMinhchung}
+                                onSelect={handleSelectMinhchung}
+                                style={{ width: 130 }}
+                                placeholder="Chọn mã"
+                            >
+                                {[...selectingChimuc.minhchungs, ...selectingChimuc.minhchungthamkhaos].map(i =>
+                                    <Option value={i.maminhchung}>
+                                        {i.maminhchung}
+                                    </Option>
+                                    )}
+                            </Select>
+                        </Form.Item>
                         </Col>
                     </React.Fragment>
                 }
@@ -307,6 +331,7 @@ function TieuchiComponent({ selectingChimuc }) {
                     onInit={editor => {
                         // You can store the "editor" and use when it is needed.
                         console.log('Editor is ready to use!', editor);
+                        setEditor(editor);
                     }}
                     config={editorConfiguration}
                     onChange={handleEditorChange}

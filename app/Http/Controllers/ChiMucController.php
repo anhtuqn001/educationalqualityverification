@@ -39,7 +39,7 @@ class ChiMucController extends Controller
                 $chimuc->applyChiMucCons();
         }
         
-        $userChimucs = $user->chimucsWithPivot()->with(['columns', 'chimucTableDetails', 'chibaos'])->get();
+        $userChimucs = $user->chimucsWithPivot()->with(['columns', 'chimucTableDetails', 'chibaos', 'minhchungs', 'minhchungthamkhaos'])->get();
         foreach($userChimucs as $userChimuc) {
             $userChimuc->getMaxDatMuc();
         }
@@ -180,6 +180,34 @@ class ChiMucController extends Controller
         }
         return response()->json([
             'tieuchis' => $tieuchis
+        ], 200);
+    }
+
+    public function getTieuchuans($truongId) {
+        try {
+            $truong = Truong::findOrFail($truongId);
+            $tieuchuans = $truong->tieuchuans;
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'tieuchuans' => $tieuchuans
+        ], 200);
+    }
+
+    public function getTieuchuansWithChiBaos($truongId) {
+        try {
+            $truong = Truong::findOrFail($truongId);
+            $tieuchuans = $truong->tieuchuansWithChibaos;
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'tieuchuans' => $tieuchuans
         ], 200);
     }
 }

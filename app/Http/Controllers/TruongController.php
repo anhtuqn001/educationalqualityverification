@@ -75,4 +75,19 @@ class TruongController extends Controller
             'result' => true
         ], 200);
     }
+
+    public function getKehoach($truongId) {
+        try {
+            $truong = Truong::findOrFail($truongId);
+            $truong->kehoach;
+            $truong->nhomsWithUsers;
+        } catch(Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'truong' => $truong,
+        ]);
+    }
 }

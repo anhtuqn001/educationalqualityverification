@@ -12,6 +12,11 @@ class ChiMuc extends Model
 {
     protected $table = "chimucs";
 
+    public function truong() 
+    {
+        return $this->belongsTo('App\Truong', 'truongid');
+    }
+
     public function chimuccons() {
         return $this->hasMany("App\ChiMuc", 'chimucchaid');
     }
@@ -38,6 +43,10 @@ class ChiMuc extends Model
 
     public function minhchungs() {
         return $this->hasMany("App\MinhChung", "tieuchiid");
+    }
+
+    public function tieuchis() {
+        return $this->chimuccons()->where('loaichimuc', 4);
     }
 
     public function minhchungthamkhaos() {
@@ -158,6 +167,10 @@ class ChiMuc extends Model
                 $newChibao->tieuchiid = $this->id;
                 if($chibao['loai'] == 2) {
                     $newChibao->thuocmuc = $chibao['thuocmuc'];
+                    $newChibao->noiham = $chibao['noiham'];
+                    $newChibao->cauhoi = $chibao['cauhoi'];
+                    $newChibao->canthuthap = $chibao['canthuthap'];
+                    $newChibao->noithuthap = $chibao['noithuthap'];
                 }
                 $newChibao->save();
             }

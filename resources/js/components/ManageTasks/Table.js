@@ -33,6 +33,7 @@ const EditableCell = ({
   children,
   record,
   handleSave,
+  hasChild,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -43,6 +44,10 @@ const EditableCell = ({
       inputRef.current.focus();
     }
   }, [editing]);
+
+  // useEffect(() => {
+  //   console.log('children', children);
+  // }, [])
 
   const toggleEdit = () => {
     setEditing(!editing);
@@ -55,13 +60,16 @@ const EditableCell = ({
     try {
       const values = await form.validateFields();
       toggleEdit();
-      handleSave({ ...record, ...values });
+      handleSave({ ...record, ...values }, dataIndex);
+      console.log('record', record);
+      console.log('values', values);
     } catch (errInfo) {
       console.log('Save failed:', errInfo);
     }
   };
 
   // let childNode = children;
+  let sumNode = (<div style={{ textAlign: 'center', fontWeight: 'bold' }}>{children}</div>)
 
   // if (editable) {
   let childNode = editing ? (
@@ -70,12 +78,6 @@ const EditableCell = ({
         margin: 0,
       }}
       name={dataIndex}
-    // rules={[
-    //   {
-    //     required: true,
-    //     message: `Không được trống`,
-    //   },
-    // ]}
     >
       <Input style={{ textAlign: 'center', paddingTop: '0px', paddingBottom: '0px' }} ref={inputRef} onPressEnter={save} onBlur={save} />
     </Form.Item>
@@ -93,14 +95,16 @@ const EditableCell = ({
     );
   // }
 
-  return <td {...restProps}>{childNode}</td>;
+  return <td {...restProps}>{hasChild ? sumNode : childNode}</td>;
 };
+
 
 const DetailsTable = ({ selectingChimuc }) => {
   const [columns, setColumns] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const { doLogout } = useContext(LogoutContext);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (selectingChimuc) {
       let { columns, chimuc_table_details } = selectingChimuc;
@@ -109,26 +113,81 @@ const DetailsTable = ({ selectingChimuc }) => {
     }
   }, [JSON.stringify(selectingChimuc)])
 
-  const handleSave = (row) => {
-    let { id } = row;
+  const handleSave = (row, dataIndex) => {
+    let { id, sumtype } = row;
     let itemIndex = dataSource.findIndex(i => i.id == id);
     if (itemIndex >= 0) {
       dataSource[itemIndex] = { ...row };
     }
+    if (sumtype) {
+      let sumtypeStr = sumtype;
+      let parentStr = sumtypeStr.slice(0, -2);
+      let siblingsStr = parentStr + '-' + '\\d';
+      let siblingsRegEx = new RegExp(siblingsStr);
+      let parentIndex = dataSource.findIndex(i => i.sumtype === parentStr);
+
+      while (parentIndex >= 0) {
+        let siblingsValueArr = dataSource.filter(i => siblingsRegEx.test(i.sumtype) && i.sumtype.length == sumtypeStr.length).map(i => i[dataIndex]);
+        let sum = 0;
+        siblingsValueArr.forEach(i => {
+          sum += +i;
+        })
+        if(!isNaN(sum)){
+          dataSource[parentIndex][dataIndex] = sum;
+        } else {
+          dataSource[parentIndex][dataIndex] = ' ';
+        }
+        sumtypeStr = parentStr;
+        parentStr = sumtypeStr.slice(0, -2);
+        siblingsStr = parentStr + '-' + '\\d';
+        siblingsRegEx = new RegExp(siblingsStr);
+        parentIndex = dataSource.findIndex(i => i.sumtype === parentStr);
+      }
+    }
+    // console.log('sumtypeStr', sumtypeStr);
+    // console.log('parentStr', parentStr);
+    // let ChildIndexArr = dataSource.filter(i => (i.sumtype != 'sum')).map(i => i[dataIndex]);
+    // let sum = 0;
+    // ChildIndexArr.forEach(i => {
+    //   sum += +i;
+    // })
+    // let sumIndex = dataSource.findIndex(i => i.sumtype == 'sum');
+    // if (sumIndex >= 0) {
+    //   dataSource[sumIndex][dataIndex] = sum;
+    // }
+    // console.log(sum);
     setDataSource([...dataSource]);
   }
 
   const fullColumns = columns.map(col => {
+    let { title } = col;
+    let widthStr = 'auto';
+    if (title == "TT") {
+      widthStr = "7%";
+    }
     return {
       ...col,
+      align: 'center',
+      width: widthStr,
       onCell: record => ({
         record,
         dataIndex: col.dataIndex,
         title: col.title,
-        handleSave
+        handleSave,
+        hasChild: hasChild(record, dataSource)
       })
     }
   })
+
+  const hasChild = (row, dataSource) => {
+    let { sumtype } = row;
+    if (!sumtype) return false;
+    let childStr = sumtype + '-' + '\\d';
+    let childRegex = new RegExp(childStr);
+    let parentIndex = dataSource.findIndex(i => childRegex.test(i.sumtype));
+    if (parentIndex >= 0) return true;
+    return false
+  }
 
   const handleSaveSubmit = () => {
     setIsLoading(true);
@@ -151,7 +210,6 @@ const DetailsTable = ({ selectingChimuc }) => {
         return response.json();
       })
       .then((result) => {
-        console.log(result);
         message.success('Lưu thành công!');
       })
       .catch((error) => {

@@ -56,7 +56,7 @@ const MenuBar = ({ role }) => {
                 </SubMenu>
                 <Menu.Item
                 icon={<CalendarOutlined/>}
-                key="setting:5">Kế hoạch tự đánh giá</Menu.Item>
+                key="setting:5"><Link to="/plan">Kế hoạch tự đánh giá</Link></Menu.Item>
                 <SubMenu icon={<PaperClipOutlined/>} title="Minh chứng">
                         <Menu.Item key="setting:6" style={styles.menuItem}><Link to="/setupevidences">Thiết lập minh chứng</Link></Menu.Item>
                         <Menu.Item key="setting:7" style={styles.menuItem}><Link to="/evidencereview">Minh chứng đã phân công</Link></Menu.Item>
@@ -70,10 +70,10 @@ const MenuBar = ({ role }) => {
                         <Menu.Item key="setting:12" style={styles.menuItem}>Tổng hợp kết quả tự đánh giá</Menu.Item> */}
                         <Menu.Item key="setting:10" style={styles.menuItem}><Link to="/endreport">Báo cáo tự đánh giá</Link></Menu.Item>
                         <Menu.Item key="setting:13" style={styles.menuItem}>Phụ lục 1</Menu.Item>
-                        <Menu.Item key="setting:14" style={styles.menuItem}>Phụ lục 2</Menu.Item>
+                        <Menu.Item key="setting:14" style={styles.menuItem}><Link to="/connotationnote">Phụ lục 2 - Phiếu xác định nội hàm</Link></Menu.Item>
                         <Menu.Item key="setting:15" style={styles.menuItem}>Phụ lục 3</Menu.Item>
                         <Menu.Item key="setting:16" style={styles.menuItem}><Link to="/evidencelist">Phụ lục 4 - Bảng danh mục mã minh chứng</Link></Menu.Item>
-                        <Menu.Item key="setting:17" style={styles.menuItem}>Phụ lục 5</Menu.Item>
+                        <Menu.Item key="setting:17" style={styles.menuItem}><Link to="/tieuchievaluation">Phụ lục 5a - Phiếu đánh giá tiêu chí</Link></Menu.Item>
                 </SubMenu>
                 {/* <Menu.Item key="1">nav 1</Menu.Item>
                 <Menu.Item key="2">nav 2</Menu.Item>

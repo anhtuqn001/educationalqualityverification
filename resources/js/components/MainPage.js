@@ -18,6 +18,10 @@ import SetUpEvidences from './SetUpEvidences/index.js';
 import EvidenceReview from './EvidenceReview/index.js';
 import EvidenceAssignment from './EvidenceAssignment/index.js';
 import EvidenceList from './EvidenceList/index.js';
+import Plan from './Plan/index.js';
+import TieuchiEvaluation from './TieuchiEvaluation/index.js';
+import ConnotationNote from './ConnotationNote/index.js';
+
 
 const layout = {
     labelCol: {
@@ -184,6 +188,15 @@ class MainPage extends React.Component {
                                 </Route>
                                 <Route path="/evidencelist">
                                     <EvidenceList truongId={truongId} />
+                                </Route>
+                                <Route path="/plan">
+                                    <Plan truongId={truongId}/>
+                                </Route>
+                                <Route path="/tieuchievaluation">
+                                    <TieuchiEvaluation truongId={truongId}/>
+                                </Route>
+                                <Route path="/connotationnote">
+                                    <ConnotationNote truongId={truongId}/>
                                 </Route>
                             </Content>
                             <Footer style={{ textAlign: 'center' }}>Bản quyền Lihanet - 2020</Footer>
