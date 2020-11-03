@@ -21,6 +21,10 @@ import EvidenceList from './EvidenceList/index.js';
 import Plan from './Plan/index.js';
 import TieuchiEvaluation from './TieuchiEvaluation/index.js';
 import ConnotationNote from './ConnotationNote/index.js';
+import PlanReport from './PlanReport/index.js';
+import PhongGiaoDuc from './PhongGiaoDuc/index.js';
+import Lv4TieuchiEvaluation from './Lv4TieuchiEvaluation/index.js';
+import Lv4ConnotationNote from './Lv4ConnotationNote/index.js';
 
 
 const layout = {
@@ -197,6 +201,18 @@ class MainPage extends React.Component {
                                 </Route>
                                 <Route path="/connotationnote">
                                     <ConnotationNote truongId={truongId}/>
+                                </Route>
+                                <Route path="/planreport">
+                                    <PlanReport truongId={truongId}/>
+                                </Route>
+                                <Route path="/lv4tieuchievaluation">
+                                    <Lv4TieuchiEvaluation truongId={truongId}/>
+                                </Route>
+                                <Route path="/lv4connotationnote">
+                                    <Lv4ConnotationNote truongId={truongId} />
+                                </Route>
+                                <Route path="/phonggiaoduc">
+                                    <PhongGiaoDuc khuvucId={1} />
                                 </Route>
                             </Content>
                             <Footer style={{ textAlign: 'center' }}>Bản quyền Lihanet - 2020</Footer>

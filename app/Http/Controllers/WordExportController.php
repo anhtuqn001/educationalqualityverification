@@ -36,7 +36,7 @@ class WordExportController extends Controller
         $phpWord->addTableStyle($fancyTableStyleName, $fancyTableStyle);
         $cellHCentered = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
         $section = $phpWord->addSection(['marginLeft' => 1700, 'marginRight' => 900]);
-        $table = $section->addTable(['alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'borderColor' => '#ffffff', 'borderSize' => -1]);
+        $table = $section->addTable(['alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'borderColor' => '#ffffff', 'borderSize' => 0]);
         $table->addRow();
         $cell1 = $table->addCell(4500, ['borderColor' => '#ffffff', 'borderSize' => 0]);
 		$cell1->addText("PHÒNG GD ĐT " . mb_strtoupper($truong->huyen), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
@@ -318,6 +318,16 @@ class WordExportController extends Controller
         $nhomHDTDG = $nhoms->first(function($item, $index) {
             return $item['loainhom'] == 1;
         });
+        $isMuc4Available = false;
+        
+        $tieuchisMuc4 = $chimucs->where('loaichimuc', 7);
+        
+        foreach($tieuchisMuc4 as $tieuchiMuc4) {
+            if($tieuchiMuc4->users->count() > 0) {
+                $isMuc4Available = true;
+            }
+            break;
+        }
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->setDefaultFontName('Times New Roman');
@@ -335,6 +345,7 @@ class WordExportController extends Controller
             'borderRightColor' => 000000,
             'borderRightSize' => 5,
         ]);
+        
         $section->addText(mb_strtoupper('PHÒNG GIÁO DỤC VÀ ĐÀO TẠO ' . $truong->huyen), ['size' => 14], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
         $section->addText(mb_strtoupper($truong->tentruong), ['size' => 14, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 200]);
         $testrun1 = $section->addTextRun(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 2000]);
@@ -353,6 +364,7 @@ class WordExportController extends Controller
             'marginBottom' => 500,
             'breakType' => 'nextPage'
         ]);
+
         $section->addText('BÁO CÁO TỰ ĐÁNH GIÁ', ['size' => 20, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 1000]);
         $section = $phpWord->addSection([
             'breakType' => 'continuous',
@@ -388,6 +400,9 @@ class WordExportController extends Controller
             $nhomHDTGDCounter++;
         }
 
+        if(!$isMuc4Available) {
+            $chimucs = $chimucs->where('loaichimuc' , '!=', 7)->whereNotIn('tenchimuc', ['II. TỰ ĐÁNH GIÁ MỨC 4', 'Kết luận đánh giá tiêu chí Mức 4']);
+        }
 
         foreach($chimucs as $chimuc) {
             if($chimuc->isDropLine) {
@@ -405,7 +420,6 @@ class WordExportController extends Controller
                 } else {
                     $section->addText($chimuc->tenchimuc, ['bold' => true]);
                 }
-                
             }
 
             //loaichimuc = 1 : normal text
@@ -766,6 +780,43 @@ class WordExportController extends Controller
                     }
                 }
 
+                // Đánh giá tiêu chí mức 4
+                if($chimuc->tenchimuc == '1.2. Đánh giá tiêu chí Mức 4'){
+                    $section = $phpWord->addSection([
+                        'breakType' => 'continuous'
+                    ]);
+                    if($isMuc4Available) {
+                       
+                       $table = $section->addTable(['borderSize' => 6, 'borderColor' => '#000000']);
+                       $table->addRow(400);
+                       $cell1 = $table->addCell(3000, ['valign' => 'center', 'vMerge' => 'restart']);
+                       $cell1->addText('Tiêu chí', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $cell1->addText('(Khoản, Điều)', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $table->addCell(4000, ['valign' => 'center', 'gridSpan' => 2])->addText('Kết quả', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $table->addCell(3000, ['valign' => 'center', 'vMerge' => 'restart'])->addText('Ghi chú', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $table->addRow(400);
+                       $table->addCell(3000, ['valign' => 'center', 'vMerge' => 'continue']);
+                       $table->addCell(2000, ['valign' => 'center'])->addText('Đạt', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $table->addCell(2000, ['valign' => 'center'])->addText('Không đạt', ['bold' => true], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       $table->addCell(3000, ['valign' => 'center', 'vMerge' => 'continue']);
+                       $isMuc4Ok = true;
+                       foreach($tieuchisMuc4 as $tieuchiMuc4) {
+                        if($isMuc4Ok && $tieuchiMuc4->thuocmuc == 0) {
+                            $isMuc4Ok = false;
+                        }
+                        $table->addRow();
+                        $displayedNames = preg_split( "/[()]/", $tieuchiMuc4->tenchimuc);
+                        $table->addCell(3000, ['valign' => 'center'])->addText($displayedNames[1], null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                        $table->addCell(2000, ['valign' => 'center'])->addText($tieuchiMuc4->thuocmuc == 4 ? 'x' : ' ', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                        $table->addCell(2000, ['valign' => 'center'])->addText($tieuchiMuc4->thuocmuc == 0 ? 'x' : ' ', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                        $table->addCell(3000, ['valign' => 'center'])->addText(' ', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+                       }
+                       $section->addText('Kết quả: ' . ($isMuc4Ok ? ' Đạt mức 4' : 'Không đạt'), ['bold' => true]);
+                    } else {
+                        $section->addText('Không');
+                    }
+                }
+
                 //Thông tin nhà trường
                 if(count($chimuc->columns) > 0 && $chimuc->tenchimuc == 'Thông tin nhà trường') {
                     // $section = $phpWord->addSection([
@@ -930,6 +981,17 @@ class WordExportController extends Controller
                     $truong->calculateDatmuc();
                     $section->addText('Kết quả: ' . ($truong->datmuc == 0 ? 'Không Đạt' : 'Đạt mức ' . $truong->datmuc), ['bold' => true]);
                 }
+            }
+
+            if($chimuc->loaichimuc == 7) {
+                foreach($chimuc->chibaos as $chibao){
+                    $section->addText($chibao->tieude, ['bold' => true]);
+                    $html = $chibao->noidung;
+                    \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+                }
+                $textrun = $section->addTextRun();
+                $textrun->addText('5. Tự đánh giá: ', ['bold' => true]);
+                $textrun->addText($chimuc->thuocmuc == 0 ? 'Không Đạt' : 'Đạt Mức 4');
             }
 
             // if($chimuc->loaichimuc == 6) {
@@ -1590,6 +1652,533 @@ class WordExportController extends Controller
     
     public function exportPXDNHDocx($tieuchiId) {
         $wordFileName = 'PXDNH' . $tieuchiId . '.docx';
+        return response()->download(storage_path($wordFileName));
+    }
+
+    public function createKHTDGDocx($truongId) {
+        $truong = Truong::findOrFail($truongId);
+        $kehoach = $truong->kehoach;
+        $nhoms = $truong->nhoms()->with('users')->get();
+        $nhomHDTDG = $nhoms->first(function($item, $index) {
+            return $item['loainhom'] == 1;
+        });
+
+        $nhomTK = $nhoms->first(function($item, $index) {
+            return $item['loainhom'] == 2;
+        });
+
+        $nhomsNormal = $nhoms->where('loainhom', 0);
+
+        $tieuchuans = $truong->tieuchuans;
+        $thoigianhoatdongs = $truong->thoigianhoatdongs;
+
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(13);
+        $phpWord->setDefaultParagraphStyle(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section = $phpWord->addSection();
+        $table = $section->addTable(['borderColor' => '#ffffff', 'borderSize' => 0]);
+        $table->addRow();
+        $cell1 = $table->addCell(4000);
+        $cell1->addText(mb_strtoupper($truong->tentruong), null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $cell1->addText('HỘI ĐỒNG TỰ ĐÁNH GIÁ', ['bold' => true], ['spaceAfter' => 1, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $testrun1 = $cell1->addTextRun(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $testrun1->addLine(['weight' => 0.5, 'width' => 150, 'height' => 0, 'color' => 000000]);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($kehoach->so ? $kehoach->so : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell1, $doc->saveXml(), true);
+
+        $cell2 = $table->addCell(6000);
+        $cell2->addText('CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', ['bold' => true, 'size' => 12], ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $cell2->addText('Độc lập - Tự do - Hạnh phúc', ['bold' => true], ['spaceAfter' => 1, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]); 
+        $testrun2 = $cell2->addTextRun(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $testrun2->addLine(['weight' => 0.5, 'width' => 150, 'height' => 0, 'color' => 000000]);
+        
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($kehoach->ngaythang ? $kehoach->ngaythang : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell2, $doc->saveXml(), true);
+
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+
+        $section->addText('KẾ HOẠCH TỰ ĐÁNH GIÁ', ['bold' => true], ['spaceBefore' => 500 ,'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addText('I. Mục đích tự đánh giá', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::START]);
+
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($kehoach->mucdich ? $kehoach->mucdich : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section->addText('II. Phạm vi tự đánh giá', ['bold' => true]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->phamvi ? $kehoach->phamvi : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section->addText('III. Công cụ tự đánh giá', ['bold' => true]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->phamvi ? $kehoach->phamvi : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section->addText('IV. Hội đồng tự đánh giá', ['bold' => true]);
+        $section->addText('1. Thành phần Hội đồng tự đánh giá', ['italic' => true]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->hoidong ? $kehoach->hoidong : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section->addText('Hội đồng gồm có ' . count($nhomHDTDG->users) . ' thành viên (Danh sách kèm theo).');
+
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(1000)->addText('TT', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500)->addText('Họ và tên', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500)->addText('Chức vụ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(4500)->addText('Nhiệm vụ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+        $nhomHDTGDCounter = 1;
+        if(count($nhomHDTDG->users) > 0)
+        foreach($nhomHDTDG->users as $user) {
+            $table->addRow();
+            $table->addCell(1000, ['valign' => 'center'])->addText($nhomHDTGDCounter, null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $table->addCell(2500, ['valign' => 'center'])->addText($user->hoten, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+            $table->addCell(2500, ['valign' => 'center'])->addText($user->chucvu, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+            $table->addCell(4500, ['valign' => 'center'])->addText($user->nhiemvu, null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $nhomHDTGDCounter++;
+        }
+
+        $section->addText('2. Nhóm thư ký và các nhóm công tác (Danh sách kèm theo)', ['italic' => true]);
+        $section->addText('a) Nhiệm vụ cụ thể cho nhóm thư ký');
+
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(1000)->addText('TT', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500)->addText('Họ và tên', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500)->addText('Chức danh, chức vụ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(4500)->addText('Nhiệm vụ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+        $nhomTKCounter = 1;
+        if(count($nhomTK->users) > 0)
+        foreach($nhomTK->users as $user) {
+            $table->addRow();
+            $table->addCell(1000, ['valign' => 'center'])->addText($nhomTKCounter, null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $table->addCell(2500, ['valign' => 'center'])->addText($user->hoten, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+            $table->addCell(2500, ['valign' => 'center'])->addText($user->chucvu, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+            $table->addCell(4500, ['valign' => 'center'])->addText($user->nhiemvu, null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $nhomTKCounter++;
+        }
+
+        $section->addText('b) Nhiệm vụ cụ thể cho các nhóm công tác');
+
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(1600, ['valign' => 'center'])->addText('TT', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2400, ['valign' => 'center'])->addText('Họ và tên', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2400, ['valign' => 'center'])->addText('Chức danh, chức vụ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2400, ['valign' => 'center'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        
+        if(count($nhomsNormal) > 0) {
+            foreach($nhomsNormal as $nhom) {
+                if(count($nhom->users) > 0) {
+                    $nhomCounter = 1;
+                    foreach($nhom->users as $user) {
+                        if($nhomCounter == 1) {
+                            $table->addRow(400);
+                            $table->addCell(1600, ['vMerge' => 'restart', 'valign' => 'center'])->addText($nhom->tennhom, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['valign' => 'center'])->addText($user->hoten, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['valign' => 'center'])->addText($user->chucvu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['vMerge' => 'restart', 'valign' => 'center'])->addText($nhom->ghichu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        } else {
+                            $table->addRow(400);
+                            $table->addCell(1600, ['vMerge' => 'continue', 'valign' => 'center'])->addText($nhom->tennhom, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['valign' => 'center'])->addText($user->hoten, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['valign' => 'center'])->addText($user->chucvu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                            $table->addCell(2400, ['vMerge' => 'continue', 'valign' => 'center'])->addText($nhom->ghichu, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        }
+                        $nhomCounter++;
+                    }
+                }
+            }
+        }
+
+        $section->addText('3. Phân công thực hiện', ['italic' => true]);
+
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(1000, ['valign' => 'center'])->addText('TT', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3500, ['valign' => 'center'])->addText('Tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3500, ['valign' => 'center'])->addText('Nhóm công tác, cá nhân chịu trách nhiệm', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2000, ['valign' => 'center'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+        if(count($tieuchuans) > 0) {
+            $tieuchiCounter = 1;
+            foreach($tieuchuans as $tieuchuan) {
+                if(count($tieuchuan->tieuchis) > 0) {
+                    foreach($tieuchuan->tieuchis as $tieuchi) {
+                        $table->addRow(400);
+                        $table->addCell(1000, ['valign' => 'center'])->addText($tieuchiCounter, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        $table->addCell(3500, ['valign' => 'center'])->addText($tieuchi->tenchimuc, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+                        $tvCell = $table->addCell(3500, ['valign' => 'center']);
+                        if(count($tieuchi->users) > 0) {
+                            foreach($tieuchi->users as $user) {
+                                $tvCell->addText('- ' . $user->hoten, null, ['spaceAfter' => 0, 'indent' => 0.1]);
+                            }
+                        }
+                        $ghichu2Cell = $table->addCell(2000, ['valign' => 'center']);
+                        $doc->loadHTML(mb_convert_encoding($tieuchi->ghichu2 ? $tieuchi->ghichu2 : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                        $doc->saveHTML();
+                        \PhpOffice\PhpWord\Shared\Html::addHtml($ghichu2Cell, $doc->saveXml(), true);
+                        $tieuchiCounter++;
+                    }
+                }
+            }
+        }
+
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+
+        $section->addText('V. Tập huấn nghiệp vụ tự đánh giá', ['bold' => true]);
+
+        $doc->loadHTML(mb_convert_encoding($kehoach->thoigian ? $kehoach->thoigian : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section->addText('2) Thành phần: Hội đồng tự đánh giá, nhóm thư ký, các nhóm công tác và các giáo viên, nhân viên có liên quan.');
+        $section->addText('3) Nội dung: Tập huấn nghiệp vụ tự đánh giá');
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+
+        $section->addText('VI. Dự kiến các nguồn lực và thời điểm cần huy động', ['bold' => true]);
+        
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(1000, ['valign' => 'center'])->addText('Tiêu chuẩn', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(4000, ['valign' => 'center'])->addText('Tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2000, ['valign' => 'center'])->addText('Các nguồn lực cần được huy động/cung cấp', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2000, ['valign' => 'center'])->addText('Thời điểm huy động', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2000, ['valign' => 'center'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+        if(count($tieuchuans) > 0) {
+            $includingChibaos = ['Mức 1:', 'Mức 2:', 'Mức 3:'];
+            $tieuchuanIndex = 1;
+            foreach($tieuchuans as $tieuchuan) {
+                if(count($tieuchuan->tieuchis) > 0) {
+                    $tieuchiIndex = 1;
+                    foreach($tieuchuan->tieuchis as $tieuchi) {
+                        $table->addRow();
+                        if($tieuchiIndex == 1) {
+                            $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'restart'])->addText($tieuchuanIndex, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        } else {
+                            $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'continue'])->addText($tieuchuanIndex, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                        }
+                        $tieuchiCell = $table->addCell(4000, ['valign' => 'center']);
+                        $tieuchiCell->addText($tieuchi->tenchimuc, null, ['spaceAfter' => 0]);
+                        foreach($tieuchi->chibaos as $chibao) {
+                            if($chibao['loai'] == 2 || in_array($chibao['tieude'], $includingChibaos)) {
+                                $tieuchiCell->addText($chibao->tieude, null, ['spaceAfter' => 0]);
+                            }
+                        }
+
+                        $nguonlucCell = $table->addCell(2000, ['valign' => 'center']);
+                        $doc->loadHTML(mb_convert_encoding($tieuchi->nguonluc ? $tieuchi->nguonluc : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                        $doc->saveHTML();
+                        \PhpOffice\PhpWord\Shared\Html::addHtml($nguonlucCell, $doc->saveXml(), true);
+
+                        $thoidiemCell = $table->addCell(2000, ['valign' => 'center']);
+                        $doc->loadHTML(mb_convert_encoding($tieuchi->thoidiem ? $tieuchi->thoidiem : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                        $doc->saveHTML();
+                        \PhpOffice\PhpWord\Shared\Html::addHtml($thoidiemCell, $doc->saveXml(), true);
+
+                        $ghichuCell = $table->addCell(1000, ['valign' => 'center']);
+                        $doc->loadHTML(mb_convert_encoding($tieuchi->ghichu ? $tieuchi->ghichu : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                        $doc->saveHTML();
+                        \PhpOffice\PhpWord\Shared\Html::addHtml($ghichuCell, $doc->saveXml(), true);
+                        $tieuchiIndex++;
+                    }
+                }
+                $tieuchuanIndex++;
+            }
+        }
+
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+
+        $section->addText('VII. Dự kiến thuê chuyên gia tư vấn để giúp hội đồng triển khai TĐG:', ['bold' => true], ['spaceAfter' => 1]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->thuechuyengia ? $kehoach->thuechuyengia : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+
+        $section->addText('VIII. Lập bảng danh mục mã minh chứng:', ['bold' => true], ['spaceAfter' => 1]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->minhchung ? $kehoach->minhchung : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+
+        $section->addText('IX. Thời gian và nội dung hoạt động:', ['bold' => true], ['spaceAfter' => 1]);
+        $doc->loadHTML(mb_convert_encoding($kehoach->thoigian2 ? $kehoach->thoigian2 : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $doc->saveXml(), true);
+
+        $table = $section->addTable(['borderSize' => 1, 'borderColor' => '000000']);
+        $table->addRow(400);
+        $table->addCell(3000, ['valign' => 'center'])->addText('Thời gian', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(7000, ['valign' => 'center'])->addText('Hoạt động', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+        if(count($thoigianhoatdongs) > 0) {
+            foreach($thoigianhoatdongs as $thoigianhoatdong) {
+                $table->addRow(400);
+                $thoigianCell = $table->addCell(3000, ['valign' => 'center']);
+                $doc->loadHTML(mb_convert_encoding($thoigianhoatdong->thoigian ? $thoigianhoatdong->thoigian : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                $doc->saveHTML();
+                \PhpOffice\PhpWord\Shared\Html::addHtml($thoigianCell, $doc->saveXml(), true);
+
+                $hoatdongCell = $table->addCell(7000, ['valign' => 'center']);
+                $doc->loadHTML(mb_convert_encoding($thoigianhoatdong->hoatdong ? $thoigianhoatdong->hoatdong : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+                $doc->saveHTML();
+                \PhpOffice\PhpWord\Shared\Html::addHtml($hoatdongCell, $doc->saveXml(), true);
+            } 
+        }
+
+
+        $section = $phpWord->addSection([
+            'breakType' => 'continuous'
+        ]);
+        $table = $section->addTable();
+        $table->addRow();
+        $cell1 = $table->addCell(5000);
+        $cell1->addText('Nơi nhận:', ['size' => 12, 'bold' => true, 'italic' => true], ['spaceAfter' => 0]);
+        $cell1->addText('- Cơ quan chủ quản (để b/c)', ['size' => 11, 'italic' => true], ['spaceAfter' => 0]);
+        $cell1->addText('- Hội đồng TĐG', ['size' => 11, 'italic' => true], ['spaceAfter' => 0]);
+        $cell1->addText('- Cán bộ, giáo viên, nhân viên nhà trường (để th/h)', ['size' => 11, 'italic' => true], ['spaceAfter' => 0]);
+        $cell1->addText('- Lưu:....', ['size' => 11, 'italic' => true]);
+
+        $cell2 = $table->addCell(5000);
+        $cell2->addText('TM. HỘI ĐỒNG', ['bold' => true], ['spaceAfter' => 1, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $cell2->addText('HIỆU TRƯỞNG', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $cell2->addText('......', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceBefore' => 600]);
+        
+        $wordFileName = 'KHTDG' . $truongId . '.docx' ;
+        $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objectWriter->save(storage_path($wordFileName));
+            } catch (Exception $e) {
+                
+            }
+        return response()->download(storage_path($wordFileName));
+    }
+
+
+    public function createPDGTCM4Docx($tieuchiId) {
+        $tieuchi = ChiMuc::findOrFail($tieuchiId);
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(13);
+        $tableStyle = array('borderSize' => 6, 'borderColor' => '#000000');
+
+        $section = $phpWord->addSection();
+        $section->addText('Phụ lục 5b', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addText('Phiếu đánh giá tiêu chí Mức 4', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $textRun1 = $section->addTextRun();
+        $textRun1->addText('Trường: ', ['bold' => true]);
+        $textRun1->addText($tieuchi->truong->tentruong);
+        $textRun2 = $section->addTextRun();
+        $textRun2->addText('Nhóm, cá nhân: ', ['bold' => true]);
+        if(count($tieuchi->users) > 0) {
+            foreach($tieuchi->users as $user) {
+                $textRun2->addText($user->hoten . ', ');
+            }
+        }
+        $section->addText('PHIẾU ĐÁNH GIÁ TIÊU CHÍ MỨC 4', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        // $section->addText($tieuchi->chimuccha->tenchimuc);
+        $section->addText($tieuchi->tenchimuc);
+        $chibaos = $tieuchi->chibaos;
+            // $chibaosMuc1 = $chibaos->where('loai', 2)->where('thuocmuc', 1);
+            // $chibaosMuc2 = $chibaos->where('loai', 2)->where('thuocmuc', 2);
+            // $chibaosMuc3 = $chibaos->where('loai', 2)->where('thuocmuc', 3);
+            //     if(count($chibaosMuc1) > 0) {
+            //         $section->addText('Mức 1:');
+            //         foreach($chibaosMuc1 as $chibao) {
+            //             $section->addText($chibao->tieude, ['italic' => true], ['hanging' => -0.5]);
+            //         }
+            //     }
+            //     if(count($chibaosMuc2) > 0) {
+            //         $section->addText('Mức 2:');
+            //         foreach($chibaosMuc2 as $chibao) {
+            //             $section->addText($chibao->tieude, ['italic' => true], ['hanging' => -0.5]);
+            //         }
+            //     }
+            //     if(count($chibaosMuc3) > 0) {
+            //         $section->addText('Mức 3:');
+            //         foreach($chibaosMuc3 as $chibao) {
+            //             $section->addText($chibao->tieude, ['italic' => true], ['hanging' => -0.5]);
+            //         }
+            //     }
+            if(count($chibaos) > 0) {
+                foreach($chibaos as $chibao) {
+                    $section = $phpWord->addSection([
+                        'breakType' => 'continuous',
+                    ]);
+                    $section->addText($chibao->tieude);
+                    $html = $chibao->noidung;
+                    \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+                    // switch($chibao->loai){
+                    //     case 0:
+                    //         $section->addText($chibao->tieude, ['bold' => true]);
+                    //         break;
+                    //     case 1:
+                    //         $section->addText($chibao->tieude, ['bold' => true]);
+                    //         // $section->addText($chibao->noidung);
+                    //         $html = $chibao->noidung;
+                    //         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+                    //         break;
+                    //     case 2:
+                    //         $html = $chibao->noidung;
+                    //         // $section->addText($chibao->noidung);
+                    //         \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+                    //         break;
+                    // }   
+                }
+                $section = $phpWord->addSection([
+                    'breakType' => 'continuous',
+                ]);
+
+                $section->addText('5. Tự đánh giá: ' . ($tieuchi->thuocmuc == 0 ? 'Không Đạt' : 'Đạt'));
+            }
+            
+                $section = $phpWord->addSection([
+                    'breakType' => 'continuous'
+                ]);
+                $table = $section->addTable([
+                    'cellMarginTop' => 500
+                ]);
+
+                $table->addRow(400);
+                $cell1 = $table->addCell(5000);
+                $cell1->addText('Xác nhận', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                $cell1->addText('của trưởng nhóm công tác', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                $cell2 = $table->addCell(5000);
+                $cell2->addText('......., ngày ...... tháng ...... năm ......', ['italic' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                $cell2->addText('Người viết', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+                $cell2->addText('(Ký và ghi rõ họ tên)', ['italic' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+
+
+        $wordFileName = 'PDGTCM4' . $tieuchiId . '.docx' ;
+        $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objectWriter->save(storage_path($wordFileName));
+            } catch (Exception $e) {
+                return response()->json([
+                    'error'=> $e->getMessage()
+                ], 500);
+            }   
+            return response()->json([
+                    'success' => true
+            ], 200);
+    }
+
+    public function exportPDGTCM4Docx($tieuchiId) {
+        $wordFileName = 'PDGTCM4' . $tieuchiId . '.docx';
+        return response()->download(storage_path($wordFileName));
+    }
+
+    public function createPXDNHM4Docx($tieuchiId) {
+        $tieuchi = ChiMuc::findOrFail($tieuchiId);
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(13);
+        $phpWord->setDefaultParagraphStyle([
+            'indent' => 0.1
+        ]);
+
+        $section = $phpWord->addSection();
+        $section->addText('Phụ lục 3', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addText('Phiếu xác định nội hàm, phân tích tiêu chí tìm minh chứng tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $section->addText('thuộc Mức 4', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        $textRun1 = $section->addTextRun();
+        $textRun1->addText('Nhóm, cá nhân: ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::START]);
+        if(count($tieuchi->users) > 0) {
+            foreach($tieuchi->users as $user) {
+                $textRun1->addText($user->hoten . ', ');
+            }
+        }
+        
+        $section->addText($tieuchi->tenchimuc, null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::START]);
+        $chibaos = $tieuchi->chibaos;
+        
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '#000000']);
+        $table->addRow(400);
+        $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'restart'])->addText('Tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500, ['valign' => 'center', 'vMerge' => 'restart'])->addText('Nội hàm', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(2500, ['valign' => 'center', 'vMerge' => 'restart'])->addText('Các câu hỏi đặt ra (ứng với mỗi nội hàm)', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(3000, ['valign' => 'center', 'gridSpan' => 2])->addText('Minh chứng', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+        $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'restart'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
+
+
+        $table->addRow(400);
+        $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'continue'])->addText(' ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $table->addCell(2500, ['valign' => 'center', 'vMerge' => 'continue'])->addText(' ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $table->addCell(2500, ['valign' => 'center', 'vMerge' => 'continue'])->addText(' ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $table->addCell(1500, ['valign' => 'center'])->addText('Cần thu thập', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $table->addCell(1500, ['valign' => 'center'])->addText('Nơi thu thập', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $table->addCell(1000, ['valign' => 'center', 'vMerge' => 'continue'])->addText(' ', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        
+        
+        $table->addRow();
+        $table->addCell(1000, ['valign' => 'center'])->addText(explode(':', $tieuchi->tenchimuc)[0], null, ['indent' => 0.1, 'spaceAfter' => 0]);
+        $cell1 = $table->addCell(2500, ['valign' => 'center']);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($tieuchi->noiham ? $tieuchi->noiham : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell1, $doc->saveXml(),true);
+
+        $cell2 = $table->addCell(2500, ['valign' => 'center']);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($tieuchi->cauhoi ? $tieuchi->cauhoi : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell2, $doc->saveXml(),true);
+
+        $cell3 = $table->addCell(1500, ['valign' => 'center']);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($tieuchi->canthuthap ? $tieuchi->canthuthap : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell3, $doc->saveXml(),true);
+
+        $cell4 = $table->addCell(1500, ['valign' => 'center']);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($tieuchi->noithuthap ? $tieuchi->noithuthap : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell4, $doc->saveXml(),true);
+
+        $cell5 = $table->addCell(1000, ['valign' => 'center']);
+        $doc = new DOMDocument();
+        $doc->loadHTML(mb_convert_encoding($tieuchi->ghichu3 ? $tieuchi->ghichu3 : '&nbsp;', 'HTML-ENTITIES', 'UTF-8'));
+        $doc->saveHTML();
+        \PhpOffice\PhpWord\Shared\Html::addHtml($cell5, $doc->saveXml(),true);
+
+        $wordFileName = 'PXDNHM4' . $tieuchiId . '.docx' ;
+        $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objectWriter->save(storage_path($wordFileName));
+            } catch (Exception $e) {
+        }
         return response()->download(storage_path($wordFileName));
     }
 }

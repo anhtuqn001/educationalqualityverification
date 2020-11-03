@@ -203,6 +203,8 @@ const CreateSchool = ({ }) => {
                             <Radio value={1}>Mẫu giáo</Radio>
                             <Radio value={2}>Tiểu học</Radio>
                             <Radio value={3}>THCS</Radio>
+                            <Radio value={4}>TH 2 cấp</Radio>
+                            <Radio value={5}>Tiểu học cấp 4</Radio>
                         </Radio.Group>
                     </Row>
                     {errorMessage && !!errorMessage.length && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: '10px' }} />}

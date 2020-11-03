@@ -81,6 +81,8 @@ class TruongController extends Controller
             $truong = Truong::findOrFail($truongId);
             $truong->kehoach;
             $truong->nhomsWithUsers;
+            $truong->tieuchuansWithChibaos;
+            $truong->thoigianhoatdongs;
         } catch(Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()

@@ -12,6 +12,7 @@ import TieuchiComponent from './TieuchiComponent.js';
 import TieuchuanComponent from './TieuchuanComponent.js';
 import KetLuanComponent from './KetluanComponent.js';
 import EmptyComponent from './EmptyComponent.js';
+import Tieuchi4Component from './Tieuchi4Component.js';
 import './index.css';
 const styles = {
     container: {
@@ -41,8 +42,7 @@ const ManageTasks = ({ userId }) => {
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),
                 'Content-Type': 'application/json'
             },
-        })
-            .then((response) => {
+        }).then((response) => {
                 if (!response.ok) return Promise.reject(response);
                 return response.json();
             })
@@ -197,10 +197,10 @@ const ManageTasks = ({ userId }) => {
                 return <TieuchiComponent selectingChimuc={selectingChimuc}/>;
             case 5:
                 return <KetLuanComponent selectingChimuc={selectingChimuc}/>;
-            // case 5: 
-            //     return <TextEditor1 selectingChimuc={selectingChimuc} updateChimucContent={updateChimucContent}/>
             case 6: 
                 return <EmptyComponent selectingChimuc={selectingChimuc}/>;
+            case 7: 
+                return <Tieuchi4Component selectingChimuc={selectingChimuc}/>;
         }
     }
     return (

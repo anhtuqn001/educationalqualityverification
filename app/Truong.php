@@ -29,6 +29,10 @@ class Truong extends Model
         return $this->chimucs()->where('loaichimuc', 4)->with(['users', 'minhchungs.tieuchis', 'minhchungthamkhaos']);
     }
 
+    public function tieuchisOnly() {
+        return $this->chimucs()->where('loaichimuc', 4);
+    }
+
     public function users() {
         return $this->hasManyThrough(User::class, Nhom::class, 'truongid', 'iddonvi')->where('loaidonvi', Nhom::class);
     }
@@ -38,11 +42,19 @@ class Truong extends Model
     }
     
     public function tieuchuansWithChibaos() {
-        return $this->chimucs()->where('loaichimuc', 3)->with('tieuchis.chibaos');
+        return $this->chimucs()->where('loaichimuc', 3)->with(['tieuchis.chibaos', 'tieuchis.users']);
+    }
+
+    public function tieuchismuc4() {
+        return $this->chimucs()->where('loaichimuc', 7)->with(['chibaos']);
     }
 
     public function kehoach() {
         return $this->hasOne('App\KeHoachTDG', 'truongid');
+    }
+
+    public function thoigianhoatdongs() {
+        return $this->hasMany('App\ThoigianHoatdong', 'truongid');
     }
 
     public function getUnassignedMinhChungs() {
@@ -54,8 +66,6 @@ class Truong extends Model
         }
         return $testArr;
     }
-
-    
 
     public function calculateDatmuc() {
         $tieuchuans = $this->chimucs->where('loaichimuc', 3);

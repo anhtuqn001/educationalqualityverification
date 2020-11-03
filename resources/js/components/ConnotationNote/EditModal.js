@@ -33,7 +33,6 @@ const EditModal = ({ isOpen, hideModal, chibao, dataIndex, updateChibao }) => {
     const handleEditorChange = (event, editor) => {
         let data = editor.getData();
         setValue(data);
-        console.log(data);
     }
  
     const handleClose = () => {

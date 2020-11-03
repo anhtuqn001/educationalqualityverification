@@ -42,6 +42,7 @@ Route::group([
     Route::get('gettieuchi/{truongId}', 'ChiMucController@getTieuchis');
     Route::get('gettieuchuan/{truongId}', 'ChiMucController@getTieuchuans');
     Route::get('gettieuchuanwithchibao/{truongId}', 'ChiMucController@getTieuchuansWithChiBaos');
+    Route::get('gettieuchimuc4/{truongId}', 'ChiMucController@getTieuchisMuc4');
     Route::post('applychimuc', 'ChiMucController@applyChiMucsToUser');
     Route::post('removechimuc', 'ChiMucController@removeChiMucsFromUser');
 
@@ -51,6 +52,7 @@ Route::group([
     Route::put('updatechimuccontent', 'ChiMucController@updateChimucContent');
     Route::put('updateketluanContent', 'ChiMucController@updateKetluanContent');
     Route::put('updatechimucchibaos', 'ChiMucController@updateChimucChibaos');
+    Route::put('tieuchimuc4', 'ChiMucController@updateTieuchiMuc4');
 
     //truong
     Route::post('truong', 'TruongController@store');
@@ -66,12 +68,19 @@ Route::group([
     //kehoach
     Route::get('kehoachtdg/{truongId}', 'TruongController@getKehoach');
 
+    Route::put('kehoachtdg', 'KeHoachTDGController@update');
+
     Route::get('/createqdtlhdtdg/{truongId}', 'WordExportController@createQDTLHDTGDDocx');
     Route::get('/createbctdg/{truongId}', 'WordExportController@createBCTDGDocx');
     Route::get('/createdstv/{truongId}', 'WordExportController@createDSTVDocx');
     Route::get('/createdmmc/{truongId}', 'WordExportController@createDMMCDocx');
     Route::get('/createpdgtc/{tieuchiId}', 'WordExportController@createPDGTCDocx');
-    Route::get('/createpxdnh/{tieuchiId}', 'WordExportController@createPXDNHDocx');
+    Route::get('/createpdgtcm4/{tieuchiId}', 'WordExportController@createPDGTCM4Docx');
+
+
+    //Tài
+    Route::get('getlisttruong/{khuvucid}','KhuVucController@getTruongs');
+    
 });
 
 Route::post('login', 'AuthController@doLogin');
@@ -90,3 +99,12 @@ Route::get('/exportdstv/{truongId}', 'WordExportController@exportDSTVDocx');
 Route::get('/exportdmmc/{truongId}', 'WordExportController@exportDMMCDocx');
 Route::get('/exportpdgtc/{tieuchiId}', 'WordExportController@exportPDGTCDocx');
 Route::get('/exportpxdnh/{tieuchiId}', 'WordExportController@exportPXDNHDocx');
+Route::get('/exportpdgtcm4/{tieuchiId}', 'WordExportController@exportPDGTCM4Docx');
+
+
+Route::get('/createpxdnh/{tieuchiId}', 'WordExportController@createPXDNHDocx');
+Route::get('/createpxdnhm4/{tieuchiId}', 'WordExportController@createPXDNHM4Docx');
+
+Route::get('/createkhtdg/{truongId}', 'WordExportController@createKHTDGDocx');
+
+

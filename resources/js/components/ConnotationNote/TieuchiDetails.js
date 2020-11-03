@@ -156,7 +156,7 @@ const TieuchiDetails = ({ tieuchi, tieuchuan }) => {
     }
     
     const exportFile = () => {
-        window.location.href = '/api/exportpxdnh/' + tieuchi.id;
+        window.location.href = '/api/createpxdnh/' + tieuchi.id;
     }
 
     if (tieuchi) {

@@ -120,7 +120,7 @@ class ChiMuc extends Model
                     $newChimuc->applyRows($child['rows']);
                 }
             }
-            if($child['loaichimuc'] == 4 && array_key_exists("chibaos", $child)) {
+            if(($child['loaichimuc'] == 4 || $child['loaichimuc'] == 7) && array_key_exists("chibaos", $child)) {
                 $newChimuc->applyChibaos($child['chibaos']);
             }
             if(array_key_exists("children", $child)){

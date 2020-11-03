@@ -69,11 +69,12 @@ const MenuBar = ({ role }) => {
                         <Menu.Item key="setting:11" style={styles.menuItem}>Kế hoạch tự đánh giá</Menu.Item>
                         <Menu.Item key="setting:12" style={styles.menuItem}>Tổng hợp kết quả tự đánh giá</Menu.Item> */}
                         <Menu.Item key="setting:10" style={styles.menuItem}><Link to="/endreport">Báo cáo tự đánh giá</Link></Menu.Item>
-                        <Menu.Item key="setting:13" style={styles.menuItem}>Phụ lục 1</Menu.Item>
+                        <Menu.Item key="setting:13" style={styles.menuItem}><Link to="/planreport">Phụ lục 1 - Kế hoạch tự đánh giá</Link></Menu.Item>
                         <Menu.Item key="setting:14" style={styles.menuItem}><Link to="/connotationnote">Phụ lục 2 - Phiếu xác định nội hàm</Link></Menu.Item>
-                        <Menu.Item key="setting:15" style={styles.menuItem}>Phụ lục 3</Menu.Item>
+                        <Menu.Item key="setting:15" style={styles.menuItem}><Link to="/lv4connotationnote">Phụ lục 3 - Phiếu xác định nội hàm Mức 4</Link></Menu.Item>
                         <Menu.Item key="setting:16" style={styles.menuItem}><Link to="/evidencelist">Phụ lục 4 - Bảng danh mục mã minh chứng</Link></Menu.Item>
                         <Menu.Item key="setting:17" style={styles.menuItem}><Link to="/tieuchievaluation">Phụ lục 5a - Phiếu đánh giá tiêu chí</Link></Menu.Item>
+                        <Menu.Item key="setting:18" style={styles.menuItem}><Link to="/lv4tieuchievaluation">Phụ lục 5b - Phiếu đánh giá tiêu chí Mức 4</Link></Menu.Item>
                 </SubMenu>
                 {/* <Menu.Item key="1">nav 1</Menu.Item>
                 <Menu.Item key="2">nav 2</Menu.Item>

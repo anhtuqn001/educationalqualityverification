@@ -151,10 +151,8 @@ class ChiMucController extends Controller
             $chimuc->thuocmuc = $request->input('thuocmuc');
             $chimuc->save();
             $chibaos = $request->input('chibaos');
-            $testArr = [];
             foreach($chibaos as $chibao) {
                $availableChibao = ChiBao::findOrFail($chibao['id']);
-               array_push($testArr, $chibao['id']);
                $availableChibao->noidung = $chibao['noidung'];
                $availableChibao->isOk = $chibao['isOk'];
                $availableChibao->save();
@@ -165,7 +163,7 @@ class ChiMucController extends Controller
             ], 500);
         }
         return response()->json([
-            'chimuc' => $testArr
+            'success' => true
         ], 200);
     }
 
@@ -209,5 +207,34 @@ class ChiMucController extends Controller
         return response()->json([
             'tieuchuans' => $tieuchuans
         ], 200);
+    }
+
+    public function getTieuchisMuc4($truongId) {
+        try {
+            $truong = Truong::findOrFail($truongId);
+            $tieuchismuc4 = $truong->tieuchismuc4;
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'tieuchis' => $tieuchismuc4
+        ]);
+    }
+
+    public function updateTieuchiMuc4(Request $request) {
+        try {
+            $tieuchi = ChiMuc::findOrFail($request->input('id'));
+            $tieuchi[$request->input('dataIndex')] = $request->input('value');
+            $tieuchi->save();
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'tieuchi' => $tieuchi
+        ], 200);    
     }
 }
