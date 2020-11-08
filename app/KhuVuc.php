@@ -9,6 +9,6 @@ class KhuVuc extends Model
     protected $table = 'khuvucs';
 
     public function truongs(){
-        return $this -> hasMany('App\Truong','khuvucid')->with('tieuchuansWithChibaos','tieuchuans');
+        return $this->hasMany('App\Truong','khuvucid');
     }
 }

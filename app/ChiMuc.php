@@ -12,9 +12,9 @@ class ChiMuc extends Model
 {
     protected $table = "chimucs";
 
-    public function truong() 
+    public function nienkhoa() 
     {
-        return $this->belongsTo('App\Truong', 'truongid');
+        return $this->belongsTo('App\NienKhoa', 'nienkhoaid');
     }
 
     public function chimuccons() {
@@ -95,13 +95,13 @@ class ChiMuc extends Model
     }
 
 
-    public function addChimucChildren($children, $truongId) {
+    public function addChimucChildren($children, $nienkhoaId) {
         foreach($children as $child) {
             $newChimuc = new ChiMuc;
             $newChimuc->tenchimuc = $child['tenchimuc'];
             $newChimuc->loaichimuc = $child['loaichimuc'];
             $newChimuc->chimucchaid = $this->id;
-            $newChimuc->truongid = $truongId;
+            $newChimuc->nienkhoaid = $nienkhoaId;
             if(array_key_exists("isHideTitle", $child)) {
                 $newChimuc->isHideTitle = $child['isHideTitle'];
             }
@@ -124,7 +124,7 @@ class ChiMuc extends Model
                 $newChimuc->applyChibaos($child['chibaos']);
             }
             if(array_key_exists("children", $child)){
-                $newChimuc->addChimucChildren($child['children'], $truongId);
+                $newChimuc->addChimucChildren($child['children'], $nienkhoaId);
             }
         }
         return;   

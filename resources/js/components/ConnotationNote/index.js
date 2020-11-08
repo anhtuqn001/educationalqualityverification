@@ -17,7 +17,7 @@ const styles = {
     },
 }
 
-const ConnotationNote = ({ truongId }) => {
+const ConnotationNote = ({ nienkhoaId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [tieuchuans, setTieuchuans] = useState(null);
     const [tieuchis, setTieuchis] = useState(null);
@@ -28,7 +28,7 @@ const ConnotationNote = ({ truongId }) => {
     // }
 
     useEffect(() => {
-        fetch('/api/gettieuchuanwithchibao/' + truongId, {
+        fetch('/api/gettieuchuanwithchibao/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),

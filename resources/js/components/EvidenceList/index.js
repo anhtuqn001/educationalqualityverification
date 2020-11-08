@@ -16,14 +16,14 @@ const styles = {
     },
 }
 
-const EvidenceList = ({ truongId }) => {
+const EvidenceList = ({ nienkhoaId }) => {
     const [iframeTimeoutId, setIframeTimeoutId] = useState(undefined);
     const [isUpdating, setIsUpdating] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const iframeRef = useRef(null);
 
     const exportFile = () => {
-        window.location.href = '/api/exportdmmc/' + truongId ;
+        window.location.href = '/api/exportdmmc/' + nienkhoaId ;
     }
 
     useEffect(()=>{
@@ -31,7 +31,7 @@ const EvidenceList = ({ truongId }) => {
             updateIframeSrc, 1000 * 3
         );
         setIframeTimeoutId(intervalId)
-        fetch('/api/createdmmc/' + truongId, {
+        fetch('/api/createdmmc/' + nienkhoaId, {
             method: 'get',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -69,7 +69,7 @@ const EvidenceList = ({ truongId }) => {
     }
     function getIframeLink() {
         console.log('load');
-        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportdmmc/${truongId}&embedded=true`;
+        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportdmmc/${nienkhoaId}&embedded=true`;
     }
 
     function updateIframeSrc() {

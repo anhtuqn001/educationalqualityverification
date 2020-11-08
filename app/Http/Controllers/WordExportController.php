@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use App\Nhom;
 use App\Truong;
 use App\ChiMuc;
+use App\NienKhoa;
 use \DOMDocument;
 class WordExportController extends Controller
 {
-    public function createQDTLHDTGDDocx($truongId) {
+    public function createQDTLHDTGDDocx($nienkhoaId) {
 
         //get data
-        $truong = Truong::findOrFail($truongId);
-        $nhoms = $truong->nhoms()->with('users')->get();
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $truong = $nienkhoa->truong;
+        $nhoms = $nienkhoa->nhoms()->with('users')->get();
         $nhomHDTDG = $nhoms->first(function($item, $index) {
             return $item['loainhom'] == 1;
         });
@@ -281,7 +283,7 @@ class WordExportController extends Controller
         
 
         $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $wordFileName = 'QDTLHD' . $truongId . '.docx' ;
+        $wordFileName = 'QDTLHD' . $nienkhoaId . '.docx' ;
         try {
             $objectWriter->save(storage_path($wordFileName));
             // $domPdfPath = base_path('vendor/dompdf/dompdf');
@@ -306,15 +308,16 @@ class WordExportController extends Controller
         ], 200);
     }
 
-    public function exportQDTLHDTGDDocx($truongId) {
-		$wordFileName = 'QDTLHD' . $truongId . '.docx' ;
+    public function exportQDTLHDTGDDocx($nienkhoaId) {
+		$wordFileName = 'QDTLHD' . $nienkhoaId . '.docx' ;
 		return response()->download(storage_path($wordFileName));
 	}
 
-    public function createBCTDGDocx($truongId) {
-        $truong = Truong::findOrFail($truongId);
-        $chimucs = $truong->chimucs;
-        $nhoms = $truong->nhoms()->with('users')->get();
+    public function createBCTDGDocx($nienkhoaId) {
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $truong = $nienkhoa->truong;
+        $chimucs = $nienkhoa->chimucs;
+        $nhoms = $nienkhoa->nhoms()->with('users')->get();
         $nhomHDTDG = $nhoms->first(function($item, $index) {
             return $item['loainhom'] == 1;
         });
@@ -978,8 +981,8 @@ class WordExportController extends Controller
                             $tieuchi->thuocmuc >= 3 ? $cell5->addText('x', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]) : ($tieuchi->maxDatmuc == 3 ? $cell5->addText('Không đạt', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]) :  $cell5->addText('--------', null, ['spaceAfter' => 0, 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]));
                         }
                     }
-                    $truong->calculateDatmuc();
-                    $section->addText('Kết quả: ' . ($truong->datmuc == 0 ? 'Không Đạt' : 'Đạt mức ' . $truong->datmuc), ['bold' => true]);
+                    $nienkhoa->calculateDatmuc();
+                    $section->addText('Kết quả: ' . ($nienkhoa->datmuc == 0 ? 'Không Đạt' : 'Đạt mức ' . $nienkhoa->datmuc), ['bold' => true]);
                 }
             }
 
@@ -998,7 +1001,7 @@ class WordExportController extends Controller
 
             // }
         }
-        $wordFileName = 'BCTDG' . $truongId . '.docx' ;
+        $wordFileName = 'BCTDG' . $nienkhoaId . '.docx' ;
         $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objectWriter->save(storage_path($wordFileName));
@@ -1012,15 +1015,16 @@ class WordExportController extends Controller
         ], 200);
     }
 
-    public function exportBCTDGDocx($truongId) {
-        $wordFileName = 'BCTDG' . $truongId . '.docx' ;
+    public function exportBCTDGDocx($nienkhoaId) {
+        $wordFileName = 'BCTDG' . $nienkhoaId . '.docx' ;
         return response()->download(storage_path($wordFileName));
     }
 
 
-    public function createDSTVDocx($truongId) {
-        $truong = Truong::findOrFail($truongId);
-        $nhoms = $truong->nhoms()->with('users')->get();
+    public function createDSTVDocx($nienkhoaId) {
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $truong = $nienkhoa->truong;
+        $nhoms = $nienkhoa->nhoms()->with('users')->get();
         $nhomsCongviec = $nhoms->where('loainhom', '!=', 1);
 
 
@@ -1079,7 +1083,7 @@ class WordExportController extends Controller
         
 
 
-        $wordFileName = 'DSTV' . $truongId . '.docx' ;
+        $wordFileName = 'DSTV' . $nienkhoaId . '.docx' ;
         $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objectWriter->save(storage_path($wordFileName));
@@ -1093,16 +1097,16 @@ class WordExportController extends Controller
             ], 200);
         }
 
-    public function exportDSTVDocx($truongId) {
-        $wordFileName = 'DSTV' . $truongId . '.docx';
+    public function exportDSTVDocx($nienkhoaId) {
+        $wordFileName = 'DSTV' . $nienkhoaId . '.docx';
         return response()->download(storage_path($wordFileName));
     }
 
-    public function createDMMCDocx($truongId) {
+    public function createDMMCDocx($nienkhoaId) {
         \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
-
-        $truong = Truong::findOrFail($truongId);
-
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $truong = $nienkhoa->truong;
+        $tieuchis = $nienkhoa->tieuchis;
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
         $phpWord->setDefaultFontName('Times New Roman');
@@ -1130,7 +1134,7 @@ class WordExportController extends Controller
         $table->addCell(3600, ['valign' => 'center'])->addText('Nơi ban hành hoặc nhóm, cá nhân thực hiện', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
         $table->addCell(1800, ['valign' => 'center'])->addText('Ghi chú', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 0]);
         
-        $tieuchis = $truong->tieuchis;
+        
 
         if(count($tieuchis) > 0) {
             foreach($tieuchis as $tieuchi) {
@@ -1156,7 +1160,7 @@ class WordExportController extends Controller
             }
         }
         
-        $wordFileName = 'DMMC' . $truongId . '.docx' ;
+        $wordFileName = 'DMMC' . $nienkhoaId . '.docx' ;
         $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objectWriter->save(storage_path($wordFileName));
@@ -1170,8 +1174,8 @@ class WordExportController extends Controller
             ], 200);
     }
 
-    public function exportDMMCDocx($truongId) {
-        $wordFileName = 'DMMC' . $truongId . '.docx' ;
+    public function exportDMMCDocx($nienkhoaId) {
+        $wordFileName = 'DMMC' . $nienkhoaId . '.docx' ;
         return response()->download(storage_path($wordFileName));
     }
 
@@ -1189,7 +1193,7 @@ class WordExportController extends Controller
         $section->addText('Phiếu đánh giá tiêu chí', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
         $textRun1 = $section->addTextRun();
         $textRun1->addText('Trường: ', ['bold' => true]);
-        $textRun1->addText($tieuchi->truong->tentruong);
+        $textRun1->addText($tieuchi->nienkhoa->truong->tentruong);
         $textRun2 = $section->addTextRun();
         $textRun2->addText('Nhóm, cá nhân: ', ['bold' => true]);
         if(count($tieuchi->users) > 0) {
@@ -1655,10 +1659,11 @@ class WordExportController extends Controller
         return response()->download(storage_path($wordFileName));
     }
 
-    public function createKHTDGDocx($truongId) {
-        $truong = Truong::findOrFail($truongId);
-        $kehoach = $truong->kehoach;
-        $nhoms = $truong->nhoms()->with('users')->get();
+    public function createKHTDGDocx($nienkhoaId) {
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $truong = $nienkhoa->truong;
+        $kehoach = $nienkhoa->kehoach;
+        $nhoms = $nienkhoa->nhoms()->with('users')->get();
         $nhomHDTDG = $nhoms->first(function($item, $index) {
             return $item['loainhom'] == 1;
         });
@@ -1669,14 +1674,14 @@ class WordExportController extends Controller
 
         $nhomsNormal = $nhoms->where('loainhom', 0);
 
-        $tieuchuans = $truong->tieuchuans;
-        $thoigianhoatdongs = $truong->thoigianhoatdongs;
+        $tieuchuans = $nienkhoa->tieuchuans;
+        $thoigianhoatdongs = $nienkhoa->thoigianhoatdongs;
 
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $phpWord->setDefaultFontName('Times New Roman');
         $phpWord->setDefaultFontSize(13);
-        $phpWord->setDefaultParagraphStyle(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        // $phpWord->setDefaultParagraphStyle(['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
         $section = $phpWord->addSection();
         $table = $section->addTable(['borderColor' => '#ffffff', 'borderSize' => 0]);
         $table->addRow();
@@ -1970,7 +1975,7 @@ class WordExportController extends Controller
         $cell2->addText('HIỆU TRƯỞNG', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
         $cell2->addText('......', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceBefore' => 600]);
         
-        $wordFileName = 'KHTDG' . $truongId . '.docx' ;
+        $wordFileName = 'KHTDG' . $nienkhoaId . '.docx' ;
         $objectWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objectWriter->save(storage_path($wordFileName));
@@ -1995,7 +2000,7 @@ class WordExportController extends Controller
         $section->addText('Phiếu đánh giá tiêu chí Mức 4', ['bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
         $textRun1 = $section->addTextRun();
         $textRun1->addText('Trường: ', ['bold' => true]);
-        $textRun1->addText($tieuchi->truong->tentruong);
+        $textRun1->addText($tieuchi->nienkhoa->truong->tentruong);
         $textRun2 = $section->addTextRun();
         $textRun2->addText('Nhóm, cá nhân: ', ['bold' => true]);
         if(count($tieuchi->users) > 0) {
@@ -2180,5 +2185,9 @@ class WordExportController extends Controller
             } catch (Exception $e) {
         }
         return response()->download(storage_path($wordFileName));
+    }
+
+    public function downloadMinhChungFile($fileName) {
+        return response()->download(public_path('files/' . $fileName));
     }
 }

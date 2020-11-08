@@ -59,7 +59,7 @@ const minhchungColumns = [
   },
 ]
 
-const SetUpEvidences = ({ truongId }) => {
+const SetUpEvidences = ({ nienkhoaId }) => {
   const [cols, setCols] = useState(null);
   const [rows, setRows] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +70,7 @@ const SetUpEvidences = ({ truongId }) => {
   const [currentMinhchung, setCurrentMinhchung] = useState(null);
 
   useEffect(() => {
-    fetch('/api/gettieuchi/' + truongId, {
+    fetch('/api/gettieuchi/' + nienkhoaId, {
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -131,7 +131,7 @@ const SetUpEvidences = ({ truongId }) => {
           let data = {
             minhchungs: minhchungHandledDatas,
             exportMinhchungs : exportMinhchungData,
-            truongId
+            nienkhoaId
           };
           fetch('/api/minhchung', {
             method: 'post',

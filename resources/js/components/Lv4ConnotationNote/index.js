@@ -17,7 +17,7 @@ const styles = {
     },
 }
 
-const Lv4ConnotationNote = ({ truongId }) => {
+const Lv4ConnotationNote = ({ nienkhoaId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [tieuchis, setTieuchis] = useState(null);
     const [currentTieuchi, setCurrentTieuchi] = useState(null);
@@ -27,7 +27,7 @@ const Lv4ConnotationNote = ({ truongId }) => {
     // }
 
     useEffect(() => {
-        fetch('/api/gettieuchimuc4/' + truongId, {
+        fetch('/api/gettieuchimuc4/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),

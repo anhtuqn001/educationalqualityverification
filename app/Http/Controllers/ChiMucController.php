@@ -9,17 +9,18 @@ use App\Nhom;
 use App\User;
 use App\ChimucTableDetail;
 use App\Truong;
+use App\NienKhoa;
 
 class ChiMucController extends Controller
 {
-    public function index($truongId) {
-       $truong = Truong::findOrFail($truongId);
-       $chimucs = ChiMuc::Where('truongid', $truong->id)->Where('chimucchaid', null)->get();
+    public function index($nienkhoaId) {
+       $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+       $chimucs = ChiMuc::Where('nienkhoaid', $nienkhoa->id)->Where('chimucchaid', null)->get();
        foreach($chimucs as $chimuc) {
             $chimuc->applyChiMucCons();
        }
-       $nhoms = $truong->nhoms;
-       $users = $truong->users;
+       $nhoms = $nienkhoa->nhoms;
+       $users = $nienkhoa->users;
        foreach($users as $user) {
          $user->applyChiMucs();
        }
@@ -32,9 +33,9 @@ class ChiMucController extends Controller
 
     public function getChiMucFromUser($userId) {
         $user = User::findOrFail($userId);
-        $truongId = $user->getTruongId();
-        $truong = Truong::findOrFail($truongId);
-        $chimucs = $truong->chimucs()->where('chimucchaid', null)->get();
+        $nienkhoaId = $user->getNienKhoaId();
+        $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+        $chimucs = $nienkhoa->chimucs()->where('chimucchaid', null)->get();
         foreach($chimucs as $chimuc) {
                 $chimuc->applyChiMucCons();
         }
@@ -167,10 +168,10 @@ class ChiMucController extends Controller
         ], 200);
     }
 
-    public function getTieuchis($truongId) {
+    public function getTieuchis($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            $tieuchis = $truong->tieuchis;
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $tieuchis = $nienkhoa->tieuchis;
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -181,10 +182,25 @@ class ChiMucController extends Controller
         ], 200);
     }
 
-    public function getTieuchuans($truongId) {
+    public function getTieuchisWithMinhChungFiles($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            $tieuchuans = $truong->tieuchuans;
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $tieuchis = $nienkhoa->tieuchisWithMinhChungFiles;
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'tieuchis' => $tieuchis
+        ], 200);
+        
+    }
+
+    public function getTieuchuans($nienkhoaId) {
+        try {
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $tieuchuans = $nienkhoa->tieuchuans;
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -195,10 +211,10 @@ class ChiMucController extends Controller
         ], 200);
     }
 
-    public function getTieuchuansWithChiBaos($truongId) {
+    public function getTieuchuansWithChiBaos($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            $tieuchuans = $truong->tieuchuansWithChibaos;
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $tieuchuans = $nienkhoa->tieuchuansWithChibaos;
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -209,10 +225,10 @@ class ChiMucController extends Controller
         ], 200);
     }
 
-    public function getTieuchisMuc4($truongId) {
+    public function getTieuchisMuc4($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            $tieuchismuc4 = $truong->tieuchismuc4;
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $tieuchismuc4 = $nienkhoa->tieuchismuc4;
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -237,4 +253,37 @@ class ChiMucController extends Controller
             'tieuchi' => $tieuchi
         ], 200);    
     }
+
+    public function getUserMinhchungs($userId) {
+        try {
+            $user = User::findOrFail($userId);
+            $minhchungs = $user->minhchungs()->with(['tieuchi', 'files'])->get();
+        } catch(Exception $e) {
+            return response()->json([
+                'error'=> $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'minhchungs' => $minhchungs
+        ], 200);    
+    }
+
+    // public function getChiMucFromUser($userId) {
+    //     $user = User::findOrFail($userId);
+    //     $nienkhoaId = $user->getNienKhoaId();
+    //     $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+    //     $chimucs = $nienkhoa->chimucs()->where('chimucchaid', null)->get();
+    //     foreach($chimucs as $chimuc) {
+    //             $chimuc->applyChiMucCons();
+    //     }
+        
+    //     $userChimucs = $user->chimucsWithPivot()->with(['columns', 'chimucTableDetails', 'chibaos', 'minhchungs', 'minhchungthamkhaos'])->get();
+    //     foreach($userChimucs as $userChimuc) {
+    //         $userChimuc->getMaxDatMuc();
+    //     }
+    //     return response()->json([
+    //         'chimucs' => $chimucs,
+    //         'userchimucs' => $userChimucs
+    //     ], 200);
+    // }
 }

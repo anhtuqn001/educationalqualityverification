@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Typography, Button } from 'antd';
@@ -30,7 +30,7 @@ const styles = {
     }
 }
 
-const CustomHeader = ({ tendangnhap }) => {
+const CustomHeader = ({ tendangnhap, tennienkhoa, showModal }) => {
     const history = useHistory();
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const { doLogout } = useContext(LogoutContext);
@@ -71,6 +71,11 @@ const CustomHeader = ({ tendangnhap }) => {
                 });
         };
     }
+
+    useEffect(() => {
+        console.log('tennienkhoa', tennienkhoa);
+    }, [tennienkhoa])
+
     return (
         <Header style={styles.menuBar}>
             {/* <div className="logo" />
@@ -81,7 +86,8 @@ const CustomHeader = ({ tendangnhap }) => {
                     </Menu> */}
             <img src="/public/images/logo2.png" alt="logo" style={styles.img} />
             <Title level={3} style={styles.title}>PHẦN MỀM KIỂM ĐỊNH CHẤT LƯỢNG GIÁO DỤC</Title>
-            <Text style={{ marginLeft: 'auto', marginRight: '10px', color: 'white' }}>Xin chào, {tendangnhap}</Text>
+            {tennienkhoa && <Button onClick={showModal} type="primary" style={{marginLeft: 'auto', marginRight: '15px'}}>{`Niên khóa: ${tennienkhoa}`}</Button>}
+            {!tennienkhoa ? <Text style={{ marginLeft: 'auto', marginRight: '10px', color: 'white' }}>Xin chào, {tendangnhap}</Text> : <Text style={{ marginRight: '10px', color: 'white' }}>Xin chào, {tendangnhap}</Text>}
             <LogoutContext.Consumer>
                 {({ doLogout }) =>
                     <Button

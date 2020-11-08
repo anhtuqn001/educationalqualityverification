@@ -17,7 +17,7 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 
-const EvidenceReview = ({ truongId }) => {
+const EvidenceReview = ({ nienkhoaId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [nhoms, setNhoms] = useState(true);
     const [currentNhomId, setCurrentNhomId] = useState(null);
@@ -26,7 +26,7 @@ const EvidenceReview = ({ truongId }) => {
     const { doLogout } = useContext(LogoutContext);
 
     useEffect(() => {
-        fetch('/api/nhomswithuserminhchung/' + truongId, {
+        fetch('/api/nhomswithuserminhchung/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),

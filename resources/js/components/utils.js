@@ -418,7 +418,7 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                         {
                                             tenchimuc: '1.2. Đánh giá tiêu chí Mức 4',
-                                            loaichimuc: 1,
+                                            loaichimuc: 6,
                                         }
                                     ]
                                 },
@@ -3482,6 +3482,148 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                     ]
                                 },
+                                {
+                                    tenchimuc: 'II. TỰ ĐÁNH GIÁ MỨC 4',
+                                    loaichimuc: 0,
+                                    children: [
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 1 Điều 22): Nhà trường phát triển Chương trình giáo dục mầm non của Bộ Giáo dục và Đào tạo trên cơ sở tham khảo, áp dụng hiệu quả mô hình, phương pháp giáo dục tiên tiến của các nước trong khu vực và thế giới; chương trình giáo dục thúc đẩy được sự phát triển toàn diện của trẻ, phù hợp với độ tuổi và điều kiện của nhà trường, văn hóa địa phương.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 2 Điều 22): Ít nhất 90% giáo viên đạt chuẩn nghề nghiệp giáo viên ở mức khá, trong đó ít nhất 40% giáo viên đạt chuẩn nghề nghiệp giáo viên ở mức tốt; đối với trường thuộc vùng khó khăn có ít nhất 80% đạt chuẩn nghề nghiệp giáo viên ở mức khá trở lên, trong đó có ít nhất 30% đạt chuẩn nghề nghiệp giáo viên ở mức tốt. Chất lượng đội ngũ giáo viên đáp ứng được phương hướng, chiến lược xây dựng và phát triển nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 3 Điều 22): Sân vườn và khu vực cho trẻ chơi có diện tích đạt chuẩn hoặc trên chuẩn theo quy định tại Tiêu chuẩn Việt Nam về yêu cầu thiết kế trường mầm non; có các góc chơi, khu vực hoạt động trong và ngoài nhóm lớp tạo cơ hội cho trẻ được khám phá, trải nghiệm, giúp trẻ phát triển toàn diện.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 4 Điều 22): 100% các công trình của nhà trường được xây dựng kiên cố. Có phòng tư vấn tâm lý. Có đầy đủ các trang thiết bị hiện đại phục vụ hoạt động nuôi dưỡng, chăm sóc và giáo dục trẻ. Có khu vực dành riêng để phát triển vận động cho trẻ, trong đó tổ chức được 02 (hai) môn thể thao phù hợp với trẻ lứa tuổi mầm non.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 5 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường hoàn thành tất cả các mục tiêu theo phương hướng, chiến lược phát triển nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 6 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường có 02 năm đạt kết quả giáo dục và các hoạt động khác vượt trội so với các trường có điều kiện kinh tế - xã hội tương đồng, được các cấp có thẩm quyền và cộng đồng ghi nhận.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Kết luận đánh giá tiêu chí Mức 4',
+                                            loaichimuc: 1
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -3814,7 +3956,7 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                         {
                                             tenchimuc: '1.2. Đánh giá tiêu chí Mức 4',
-                                            loaichimuc: 1,
+                                            loaichimuc: 6,
                                         }
                                     ]
                                 },
@@ -7149,6 +7291,126 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                     ]
                                 },
+                                {
+                                    tenchimuc: 'II. TỰ ĐÁNH GIÁ MỨC 4',
+                                    loaichimuc: 0,
+                                    children: [
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 1 Điều 22): Kế hoạch giáo dục của nhà trường có những nội dung được tham khảo Chương trình giáo dục tiên tiến của các nước trong khu vực và thế giới đúng quy định, phù hợp, hiệu quả và góp phần nâng cao chất lượng giáo dục.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 2 Điều 22): Đảm bảo 100% cho học sinh có hoàn cảnh khó khăn, học sinh có năng khiếu hoàn thành mục tiêu giáo dục dành cho từng cá nhân với sự tham gia của nhà trường, các tổ chức, cá nhân liên quan.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 3 Điều 22): Thư viện có hệ thống hạ tầng công nghệ thông tin hiện đại, có kết nối Internet đáp ứng yêu cầu các hoạt động của nhà trường; có nguồn tài liệu truyền thống và tài liệu số phong phú đáp ứng yêu cầu các hoạt động nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 4 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường hoàn thành tất cả các mục tiêu theo phương hướng, chiến lược phát triển nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 5 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường có ít nhất 02 năm có kết quả giáo dục, các hoạt động khác của nhà trường vượt trội so với các trường có điều kiện kinh tế - xã hội tương đồng, được các cấp thẩm quyền và cộng đồng ghi nhận.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Kết luận đánh giá tiêu chí Mức 4',
+                                            loaichimuc: 1
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -7517,7 +7779,7 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                         {
                                             tenchimuc: '1.2. Đánh giá tiêu chí Mức 4',
-                                            loaichimuc: 1,
+                                            loaichimuc: 6,
                                         }
                                     ]
                                 },
@@ -10894,6 +11156,148 @@ export const getChiMucsData = (loaitruong) => {
                                         },
                                     ]
                                 },
+                                {
+                                    tenchimuc: 'II. TỰ ĐÁNH GIÁ MỨC 4',
+                                    loaichimuc: 0,
+                                    children: [
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 1 Điều 22): Kế hoạch giáo dục của nhà trường có những nội dung được tham khảo chương trình giáo dục tiên tiến của các nước trong khu vực và thế giới theo quy định, phù hợp và góp phần nâng cao chất lượng giáo dục.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 2 Điều 22): Đảm bảo 100% cho học sinh có hoàn cảnh khó khăn, học sinh có năng khiếu hoàn thành mục tiêu giáo dục dành cho từng cá nhân với sự tham gia của nhà trường, các tổ chức, cá nhân liên quan.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 3 Điều 22): Nhà trường tại địa bàn vùng khó khăn có học sinh tham gia nghiên cứu khoa học, công nghệ và vận dụng kiến thức của các môn học vào giải quyết những vấn đề thực tiễn. Nhà trường các vùng còn lại có học sinh tham gia nghiên cứu khoa học, công nghệ và vận dụng kiến thức của các môn học vào giải quyết những vấn đề thực tiễn được cấp thẩm quyền ghi nhận.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 4 Điều 22): Thư viên có hệ thống hạ tầng công nghệ thông tin hiện đại phù hợp với tiêu chuẩn trong khu vực và quốc tế. Thư viện có kết nối Internet băng thông rộng, có mạng không dây, đáp ứng yêu cầu các hoạt động của nhà trường; có nguồn tài liệu truyền thống và tài liệu số phong phú đáp ứng yêu cầu các hoạt động của nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 5 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường hoàn thành tất cả các mục tiêu theo phương hướng, chiến lược phát triển nhà trường.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Tiêu chí (Khoản 6 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường có ít nhất 02 năm có kết quả giáo dục, các hoạt động khác của nhà trường vượt trội so với các trường có điều kiện kinh tế - xã hội tương đồng, được các cấp thẩm quyền và cộng đồng ghi nhận.',
+                                            loaichimuc: 7,
+                                            chibaos: [
+                                                {
+                                                    tieude: '1. Mô tả hiện trạng',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '2. Điểm mạnh',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '3. Điểm yếu',
+                                                    loai: 1
+                                                },
+                                                {
+                                                    tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                    loai: 1
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            tenchimuc: 'Kết luận đánh giá tiêu chí Mức 4',
+                                            loaichimuc: 1
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -11262,7 +11666,7 @@ export const getChiMucsData = (loaitruong) => {
                                     },
                                     {
                                         tenchimuc: '1.2. Đánh giá tiêu chí Mức 4',
-                                        loaichimuc: 1,
+                                        loaichimuc: 6,
                                     }
                                 ]
                             },
@@ -14756,6 +15160,148 @@ export const getChiMucsData = (loaitruong) => {
                                     },
                                 ]
                             },
+                            {
+                                tenchimuc: 'II. TỰ ĐÁNH GIÁ MỨC 4',
+                                loaichimuc: 0,
+                                children: [
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 1 Điều 22): Kế hoạch giáo dục của nhà trường có những nội dung được tham khảo chương trình giáo dục tiên tiến của các nước trong khu vực và thế giới theo quy định, phù hợp và góp phần nâng cao chất lượng giáo dục.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 2 Điều 22): Đảm bảo 100% cho học sinh có hoàn cảnh khó khăn, học sinh có năng khiếu hoàn thành mục tiêu giáo dục dành cho từng cá nhân với sự tham gia của nhà trường, các tổ chức, cá nhân liên quan.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 3 Điều 22): Nhà trường tại địa bàn vùng khó khăn có học sinh tham gia nghiên cứu khoa học, công nghệ và vận dụng kiến thức của các môn học vào giải quyết những vấn đề thực tiễn. Nhà trường các vùng còn lại có học sinh tham gia nghiên cứu khoa học, công nghệ và vận dụng kiến thức của các môn học vào giải quyết những vấn đề thực tiễn được cấp thẩm quyền ghi nhận.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 4 Điều 22): Thư viên có hệ thống hạ tầng công nghệ thông tin hiện đại phù hợp với tiêu chuẩn trong khu vực và quốc tế. Thư viện có kết nối Internet băng thông rộng, có mạng không dây, đáp ứng yêu cầu các hoạt động của nhà trường; có nguồn tài liệu truyền thống và tài liệu số phong phú đáp ứng yêu cầu các hoạt động của nhà trường.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 5 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường hoàn thành tất cả các mục tiêu theo phương hướng, chiến lược phát triển nhà trường.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Tiêu chí (Khoản 6 Điều 22): Trong 05 năm liên tiếp tính đến thời điểm đánh giá, nhà trường có ít nhất 02 năm có kết quả giáo dục, các hoạt động khác của nhà trường vượt trội so với các trường có điều kiện kinh tế - xã hội tương đồng, được các cấp thẩm quyền và cộng đồng ghi nhận.',
+                                        loaichimuc: 7,
+                                        chibaos: [
+                                            {
+                                                tieude: '1. Mô tả hiện trạng',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '2. Điểm mạnh',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '3. Điểm yếu',
+                                                loai: 1
+                                            },
+                                            {
+                                                tieude: '4. Kế hoạch cải tiến chất lượng',
+                                                loai: 1
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        tenchimuc: 'Kết luận đánh giá tiêu chí Mức 4',
+                                        loaichimuc: 1
+                                    }
+                                ]
+                            }
                         ]
                     }
                 ]

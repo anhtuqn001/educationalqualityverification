@@ -6,15 +6,17 @@ use Illuminate\Http\Request;
 use App\MinhChung;
 use App\Truong;
 use App\ExportMinhchung;
+use App\NienKhoa;
 
 class MinhChungController extends Controller
 {
     public function importMinhChungs(Request $request) {
         try {
          //remove avalable minhchungs
-        $truong = Truong::findOrFail($request->input('truongId'));
-        if($truong->isMinhChungImported()) {
-            $truong->removeAvailableMinhChungs();
+        $nienkhoa = NienKhoa::findOrFail($request->input('nienkhoaId'));
+        // $truong = Truong::findOrFail($request->input('truongId'));
+        if($nienkhoa->isMinhChungImported()) {
+            $nienkhoa->removeAvailableMinhChungs();
         }
         $minhchungs = $request->input('minhchungs');
         foreach($minhchungs as $minhchung) {
@@ -47,8 +49,8 @@ class MinhChungController extends Controller
             $newExportMinhchung->tieuchiid = $exportMinhchung['tieuchiid'];
             $newExportMinhchung->save();   
         }
-            $truong1 = Truong::findOrFail($request->input('truongId'));
-            $tieuchis = $truong1->tieuchis;
+            $nienkhoa1 = NienKhoa::findOrFail($request->input('nienkhoaId'));
+            $tieuchis = $nienkhoa1->tieuchis;
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -59,13 +61,12 @@ class MinhChungController extends Controller
         ], 200);
     }
 
-    public function getUnassignedMinhchungs($truongId) {
+    public function getUnassignedMinhchungs($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            $minhchungs = $truong->getUnassignedMinhChungs();
-            if($truong != null) {
-                $nhoms = $truong->nhoms()->with(['users'])->get();
-            }
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            // $truong = Truong::findOrFail($truongId);
+            $minhchungs = $nienkhoa->getUnassignedMinhChungs();
+            $nhoms = $nienkhoa->nhoms()->with(['users'])->get();
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()
@@ -94,5 +95,7 @@ class MinhChungController extends Controller
         return response()->json([
             'success' => true
         ]);
-    } 
+    }
+    
+    
 }

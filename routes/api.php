@@ -25,11 +25,11 @@ Route::group([
     Route::get('user', 'AuthController@getAuthenticatedUser');
     Route::post('logout', 'AuthController@doLogout');
     // Route::post('changepassword', 'AuthController@changePassword');
-    Route::get('nhom/{idTruong}', 'NhomController@index');
+    Route::get('nhom/{nienkhoaId}', 'NhomController@index');
     Route::post('nhom', 'NhomController@store');
     Route::put('nhom', 'NhomController@update');
     Route::delete('nhom/{id}', 'NhomController@destroy');
-    Route::get('nhomswithuserminhchung/{truongId}', 'NhomController@getNhomsWithUserMinhChungs');
+    Route::get('nhomswithuserminhchung/{nienkhoaId}', 'NhomController@getNhomsWithUserMinhChungs');
 
     //user 
     Route::post('user', 'UserController@createUserFromNhom');
@@ -37,14 +37,16 @@ Route::group([
     Route::delete('user/{id}', 'UserController@destroy');
 
     //chimuc
-    Route::get('chimuc/{truongId}', 'ChiMucController@index');
+    Route::get('chimuc/{nienkhoaId}', 'ChiMucController@index');
     Route::get('getchimucfromuser/{userId}', 'ChiMucController@getChiMucFromUser');
-    Route::get('gettieuchi/{truongId}', 'ChiMucController@getTieuchis');
+    Route::get('gettieuchi/{nienkhoaId}', 'ChiMucController@getTieuchis');
+    Route::get('gettieuchiwithminhchungfiles/{nienkhoaId}', 'ChiMucController@getTieuchisWithMinhChungFiles');
     Route::get('gettieuchuan/{truongId}', 'ChiMucController@getTieuchuans');
-    Route::get('gettieuchuanwithchibao/{truongId}', 'ChiMucController@getTieuchuansWithChiBaos');
-    Route::get('gettieuchimuc4/{truongId}', 'ChiMucController@getTieuchisMuc4');
+    Route::get('gettieuchuanwithchibao/{nienkhoaId}', 'ChiMucController@getTieuchuansWithChiBaos');
+    Route::get('gettieuchimuc4/{nienkhoaId}', 'ChiMucController@getTieuchisMuc4');
     Route::post('applychimuc', 'ChiMucController@applyChiMucsToUser');
     Route::post('removechimuc', 'ChiMucController@removeChiMucsFromUser');
+    Route::get('getuserminhchungs/{userId}', 'ChiMucController@getUserMinhchungs');
 
     Route::get('chimuctest', 'ChiMucController@chimucTest');
     Route::get('getchimuctable/{id}', 'ChiMucController@getChimucTableTypeFromUser');
@@ -55,29 +57,40 @@ Route::group([
     Route::put('tieuchimuc4', 'ChiMucController@updateTieuchiMuc4');
 
     //truong
+    Route::get('truong', 'TruongController@index');
     Route::post('truong', 'TruongController@store');
+
+    //Nien khoa
+    Route::post('getnienkhoa', 'NienKhoaController@getNienKhoa');
+    Route::post('nienkhoa', 'NienKhoaController@store');
+    Route::get('tentruong/{nienkhoaId}', 'NienKhoaController@getTenTruong');
 
     //minhchung
 
     Route::post('minhchung', 'MinhChungController@importMinhChungs');
-    Route::get('getunassignedminhchungs/{truongId}', 'MinhChungController@getUnassignedMinhchungs');
+    Route::get('getunassignedminhchungs/{nienkhoaId}', 'MinhChungController@getUnassignedMinhchungs');
     Route::post('assignminhchungs', 'MinhChungController@assignMinhchungsToUsers');
-
     Route::put('chibao', 'ChiBaoController@update');
 
+    //minh chung file
+    Route::post('fileminhchung', 'MinhChungFileController@store');
+    Route::delete('removeminhchungfile', 'MinhChungFileController@remove');
+
     //kehoach
-    Route::get('kehoachtdg/{truongId}', 'TruongController@getKehoach');
+    Route::get('kehoachtdg/{nienkhoaId}', 'NienKhoaController@getKehoach');
 
     Route::put('kehoachtdg', 'KeHoachTDGController@update');
 
-    Route::get('/createqdtlhdtdg/{truongId}', 'WordExportController@createQDTLHDTGDDocx');
-    Route::get('/createbctdg/{truongId}', 'WordExportController@createBCTDGDocx');
-    Route::get('/createdstv/{truongId}', 'WordExportController@createDSTVDocx');
-    Route::get('/createdmmc/{truongId}', 'WordExportController@createDMMCDocx');
+    Route::get('/createqdtlhdtdg/{nienkhoaId}', 'WordExportController@createQDTLHDTGDDocx');
+    Route::get('/createbctdg/{nienkhoaId}', 'WordExportController@createBCTDGDocx');
+    Route::get('/createdstv/{nienkhoaId}', 'WordExportController@createDSTVDocx');
+    Route::get('/createdmmc/{nienkhoaId}', 'WordExportController@createDMMCDocx');
     Route::get('/createpdgtc/{tieuchiId}', 'WordExportController@createPDGTCDocx');
     Route::get('/createpdgtcm4/{tieuchiId}', 'WordExportController@createPDGTCM4Docx');
 
-
+    //Khu vực
+    Route::get('khuvuc/{khuvucId}', 'KhuVucController@getKhuVuc');
+    Route::post('khuvuc', 'KhuVucController@store');
     //Tài
     Route::get('getlisttruong/{khuvucid}','KhuVucController@getTruongs');
     
@@ -93,10 +106,10 @@ Route::post('login', 'AuthController@doLogin');
 // Route::get('/createpxdnh/{tieuchiId}', 'WordExportController@createPXDNHDocx');
 
 
-Route::get('/exportqdtlhdtdg/{truongId}', 'WordExportController@exportQDTLHDTGDDocx');
-Route::get('/exportbctdg/{truongId}', 'WordExportController@exportBCTDGDocx');
-Route::get('/exportdstv/{truongId}', 'WordExportController@exportDSTVDocx');
-Route::get('/exportdmmc/{truongId}', 'WordExportController@exportDMMCDocx');
+Route::get('/exportqdtlhdtdg/{nienkhoaId}', 'WordExportController@exportQDTLHDTGDDocx');
+Route::get('/exportbctdg/{nienkhoaId}', 'WordExportController@exportBCTDGDocx');
+Route::get('/exportdstv/{nienkhoaId}', 'WordExportController@exportDSTVDocx');
+Route::get('/exportdmmc/{nienkhoaId}', 'WordExportController@exportDMMCDocx');
 Route::get('/exportpdgtc/{tieuchiId}', 'WordExportController@exportPDGTCDocx');
 Route::get('/exportpxdnh/{tieuchiId}', 'WordExportController@exportPXDNHDocx');
 Route::get('/exportpdgtcm4/{tieuchiId}', 'WordExportController@exportPDGTCM4Docx');
@@ -105,6 +118,8 @@ Route::get('/exportpdgtcm4/{tieuchiId}', 'WordExportController@exportPDGTCM4Docx
 Route::get('/createpxdnh/{tieuchiId}', 'WordExportController@createPXDNHDocx');
 Route::get('/createpxdnhm4/{tieuchiId}', 'WordExportController@createPXDNHM4Docx');
 
-Route::get('/createkhtdg/{truongId}', 'WordExportController@createKHTDGDocx');
+Route::get('/createkhtdg/{nienkhoaId}', 'WordExportController@createKHTDGDocx');
+
+Route::get('/downloadminhchungfile/{fileName}', 'WordExportController@downloadMinhChungFile');
 
 

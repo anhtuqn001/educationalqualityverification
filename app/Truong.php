@@ -9,6 +9,7 @@ use App\ExportMinhchung;
 class Truong extends Model
 {
     protected $table = "truongs";
+    protected $with = ['nienkhoas'];
 
     public function nhoms()
     {
@@ -119,4 +120,9 @@ class Truong extends Model
         }
         return;
     }
+
+    public function nienkhoas() {
+        return $this->hasMany('App\NienKhoa', 'truongid');
+    }
+
 }

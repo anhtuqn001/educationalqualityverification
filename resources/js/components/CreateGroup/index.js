@@ -43,7 +43,7 @@ const styles = {
     }
 }
 
-const CreateGroup = ({ truongId }) => {
+const CreateGroup = ({ nienkhoaId }) => {
     const [nhoms, setNhoms] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCreateNhomModalOpen, setIsCreateNhomModalOpen] = useState(false);
@@ -57,7 +57,7 @@ const CreateGroup = ({ truongId }) => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch("/api/nhom/" + truongId, {
+        fetch("/api/nhom/" + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
@@ -208,7 +208,7 @@ const CreateGroup = ({ truongId }) => {
             <NhomTable nhoms={nhoms} isLoading={isLoading} setCurrentNhomFunc={setCurrentNhomFunc} removeCurrentNhom={removeCurrentNhom} removeCurrentUser={removeCurrentUser} setCurrentUserFunc={setCurrentUserFunc} />
             <div style={styles.plusIconContainer}>
             </div>
-            <CreateNhomModal isOpen={isCreateNhomModalOpen} handleCloseCreateNhomModal={handleCloseCreateNhomModal} appendNhom={appendNhom} truongId={truongId}/>
+            <CreateNhomModal isOpen={isCreateNhomModalOpen} handleCloseCreateNhomModal={handleCloseCreateNhomModal} appendNhom={appendNhom} nienkhoaId={nienkhoaId}/>
             <EditNhomModal nhom={currentNhom} isOpen={isEditNhomModalOpen} handleCloseEditNhomModal={handleCloseEditNhomModal} changeEditedNhom={changeEditedNhom}/>
             <CreateUserModal isOpen={isCreateUserModalOpen} handleCloseCreateUserModal={handleCloseCreateUserModal} currentNhom={currentNhom} appendUser={appendUser} />
             <EditUserModal isOpen={isEditUserModalOpen} user={currentUser} handleCloseEditUserModal={handleCloseEditUserModal} changeEditedUser={changeEditedUser} />

@@ -26,6 +26,10 @@ class MinhChung extends Model
         return $this->belongsToMany('App\ChiMuc', 'tieuchi_minhchungthamkhao', 'minhchungid', 'tieuchiid');
     }
 
+    public function files() {
+        return $this->hasMany('App\MinhChungFile', 'minhchungid');
+    }
+
     public static function boot() {
         parent::boot();
         static::deleting(function($minhchung) { // before delete() method call this

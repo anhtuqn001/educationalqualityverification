@@ -11,8 +11,8 @@ const { Paragraph, Text } = Typography;
 
 
 
-const getHdtdgData = (truong) => {
-    let { nhoms_with_users } = truong;
+const getHdtdgData = (nienkhoa) => {
+    let { nhoms_with_users } = nienkhoa;
     if (nhoms_with_users && nhoms_with_users.filter(i => i.loainhom == 1).length > 0) {
         let { users } = nhoms_with_users.filter(i => i.loainhom == 1)[0];
         if (users.length > 0) {
@@ -27,8 +27,8 @@ const getHdtdgData = (truong) => {
     }
 }
 
-const getNtkData = (truong) => {
-    let { nhoms_with_users } = truong;
+const getNtkData = (nienkhoa) => {
+    let { nhoms_with_users } = nienkhoa;
     if (nhoms_with_users && nhoms_with_users.filter(i => i.loainhom == 2).length > 0) {
         let { users } = nhoms_with_users.filter(i => i.loainhom == 2)[0];
         if (users.length > 0) {
@@ -43,8 +43,8 @@ const getNtkData = (truong) => {
     }
 }
 
-const getNhomData = (truong) => {
-    let { nhoms_with_users } = truong;
+const getNhomData = (nienkhoa) => {
+    let { nhoms_with_users } = nienkhoa;
     if (nhoms_with_users && nhoms_with_users.filter(i => i.loainhom == 0).length > 0) {
         let nhoms = nhoms_with_users.filter(i => i.loainhom == 0);
         let totalUsers = [];
@@ -63,8 +63,8 @@ const getNhomData = (truong) => {
     }
 }
 
-const getPhancongData = (truong) => {
-    let { tieuchuans_with_chibaos: tieuchuans } = truong;
+const getPhancongData = (nienkhoa) => {
+    let { tieuchuans_with_chibaos: tieuchuans } = nienkhoa;
     let totalTieuchis = [];
     if (tieuchuans && tieuchuans.length > 0) {
         let indexCounter = 1;
@@ -85,8 +85,8 @@ const getPhancongData = (truong) => {
     return totalTieuchis;
 }
 
-const getNguonLucData = (truong) => {
-    let { tieuchuans_with_chibaos: tieuchuans } = truong;
+const getNguonLucData = (nienkhoa) => {
+    let { tieuchuans_with_chibaos: tieuchuans } = nienkhoa;
     let totalTieuchis = [];
     if (tieuchuans && tieuchuans.length > 0) {
         tieuchuans.forEach((i, tieuchuanIndex) => {
@@ -116,8 +116,8 @@ const getNguonLucData = (truong) => {
     })
 }
 
-const getThoigianHoatdongData = (truong) => {
-    let { thoigianhoatdongs } = truong;
+const getThoigianHoatdongData = (nienkhoa) => {
+    let { thoigianhoatdongs } = nienkhoa;
     return thoigianhoatdongs.map(i => ({
         id: i.id,
         thoigian: i.thoigian,
@@ -128,14 +128,15 @@ const getThoigianHoatdongData = (truong) => {
 
 
 
-const Plan = ({ truongId }) => {
+const Plan = ({ nienkhoaId }) => {
     const [values, setValues] = useState(['Demo1', 'Demo2', 'Demo3']);
     const [data, setData] = useState(null);
     const { doLogout } = useContext(LogoutContext);
     const [isLoading, setIsLoading] = useState(true);
-    const [truong, setTruong] = useState(null);
+    const [nienkhoa, setNienkhoa] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTarget, setEditingTarget] = useState(null);
+    const [truong, setTruong] = useState(null);
 
     const hdtdgColumns = [
         {
@@ -357,7 +358,7 @@ const Plan = ({ truongId }) => {
     ]
 
     useEffect(() => {
-        fetch('/api/kehoachtdg/' + truongId, {
+        fetch('/api/kehoachtdg/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -367,9 +368,11 @@ const Plan = ({ truongId }) => {
             if (!response.ok) return Promise.reject(response);
             return response.json();
         }).then((resData) => {
-            let { truong } = resData;
-            console.log('truong', truong);
+            let { nienkhoa } = resData;
+            let { truong } = nienkhoa;
+            console.log(nienkhoa);
             setTruong(truong);
+            setNienkhoa(nienkhoa);
         }).catch((error) => {
             if (error.status == 401) {
                 if (localStorage.getItem("token") !== null) {
@@ -407,26 +410,26 @@ const Plan = ({ truongId }) => {
     const updateTarget = (target, index, type) => {
         switch(type) {
             case 1:
-                truong.kehoach[index] = target[index];
-                setTruong({...truong});
+                nienkhoa.kehoach[index] = target[index];
+                setNienkhoa({...nienkhoa});
                 break;
             case 2:
             case 3:
                 let { chimucchaid, id : tieuchiId } = target;
-                let tieuchuanIndex = truong.tieuchuans_with_chibaos.findIndex(i => i.id == chimucchaid);
+                let tieuchuanIndex = nienkhoa.tieuchuans_with_chibaos.findIndex(i => i.id == chimucchaid);
                 if(tieuchuanIndex >= 0) {
-                    let tieuchiIndex = truong.tieuchuans_with_chibaos[tieuchuanIndex].tieuchis.findIndex(i => i.id == tieuchiId);
+                    let tieuchiIndex = nienkhoa.tieuchuans_with_chibaos[tieuchuanIndex].tieuchis.findIndex(i => i.id == tieuchiId);
                     if(tieuchiId >= 0) {
-                        truong.tieuchuans_with_chibaos[tieuchuanIndex].tieuchis[tieuchiIndex][index] = target[index];
-                        setTruong({...truong});
+                        nienkhoa.tieuchuans_with_chibaos[tieuchuanIndex].tieuchis[tieuchiIndex][index] = target[index];
+                        setNienkhoa({...nienkhoa});
                     }
                 }
                 break;
             case 4:
-               let thoigianhoatdongIndex = truong.thoigianhoatdongs.findIndex(i => i.id == target.id);
+               let thoigianhoatdongIndex = nienkhoa.thoigianhoatdongs.findIndex(i => i.id == target.id);
                if(thoigianhoatdongIndex >= 0){
-                   truong.thoigianhoatdongs[thoigianhoatdongIndex][index] = target[index];
-                   setTruong({...truong});
+                   nienkhoa.thoigianhoatdongs[thoigianhoatdongIndex][index] = target[index];
+                   setNienkhoa({...nienkhoa});
                }
             break;
         }
@@ -447,9 +450,9 @@ const Plan = ({ truongId }) => {
                                     <hr />
                                 </Col>
                             </Row>
-                            <div style={{ marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.so)}</div>
+                            <div style={{ marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.so)}</div>
                             <span><EditTwoTone onClick={() => {
-                                setAppropiateTarget(truong.kehoach.id, 'so', truong.kehoach.so, 1);
+                                setAppropiateTarget(nienkhoa.kehoach.id, 'so', nienkhoa.kehoach.so, 1);
                             }} /></span>
                         </Col >
                         <Col span={18} style={{ textAlign: 'center' }}>
@@ -460,34 +463,34 @@ const Plan = ({ truongId }) => {
                                     <hr />
                                 </Col>
                             </Row>
-                            <div style={{ marginRight: '5px', display: 'inline-block', fontStyle: 'italic' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.ngaythang)}</div>
+                            <div style={{ marginRight: '5px', display: 'inline-block', fontStyle: 'italic' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.ngaythang)}</div>
                             <span><EditTwoTone onClick={() => {
-                                setAppropiateTarget(truong.kehoach.id, 'ngaythang', truong.kehoach.ngaythang, 1);
+                                setAppropiateTarget(nienkhoa.kehoach.id, 'ngaythang', nienkhoa.kehoach.ngaythang, 1);
                             }} /></span>
                         </Col>
                     </Row>
                     <div style={{ paddingLeft: '10px' }}><Text strong>I. Mục đích tự đánh giá</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.mucdich)}</div>
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.mucdich)}</div>
                     <span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'mucdich', truong.kehoach.mucdich, 1);
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'mucdich', nienkhoa.kehoach.mucdich, 1);
                     }} /></span>
                 </Col>
             </Row>
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>II. Phạm vi tự đánh giá</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.phamvi)}</div>
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.phamvi)}</div>
                     <span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'phamvi', truong.kehoach.phamvi, 1);
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'phamvi', nienkhoa.kehoach.phamvi, 1);
                     }} /></span>
                 </Col>
             </Row>
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>III. Công cụ tự đánh giá</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.congcu)}</div>
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.congcu)}</div>
                     <span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'congcu', truong.kehoach.congcu, 1);
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'congcu', nienkhoa.kehoach.congcu, 1);
                     }} /></span>
                 </Col>
             </Row>
@@ -495,44 +498,44 @@ const Plan = ({ truongId }) => {
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>IV. Hội đồng tự đánh giá</Text></div>
                     <div style={{ paddingLeft: '10px' }}>1. Thành phần Hội đồng tự đánh giá</div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.hoidong)}</div>
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.hoidong)}</div>
                     <span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'hoidong', truong.kehoach.hoidong, 1);
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'hoidong', nienkhoa.kehoach.hoidong, 1);
                     }} /></span>
-                    <div style={{ paddingLeft: '10px' }}>{`Hội đồng gồm có ${truong && truong['nhoms_with_users'].filter(i => i.loainhom == 1)[0].users.length} thành viên (Danh sách kèm theo).`}</div>
-                    {truong && truong['nhoms_with_users'].filter(i => i.loainhom == 1)[0].users.length > 0 &&
+                    <div style={{ paddingLeft: '10px' }}>{`Hội đồng gồm có ${nienkhoa && nienkhoa['nhoms_with_users'].filter(i => i.loainhom == 1)[0].users.length} thành viên (Danh sách kèm theo).`}</div>
+                    {nienkhoa && nienkhoa['nhoms_with_users'].filter(i => i.loainhom == 1)[0].users.length > 0 &&
                         <Table
                             pagination={false}
                             columns={hdtdgColumns}
-                            dataSource={getHdtdgData(truong)}
+                            dataSource={getHdtdgData(nienkhoa)}
                             bordered
                         ></Table>
                     }
                     <div style={{ paddingLeft: '10px' }}>2. Nhóm thư ký và các nhóm công tác (Danh sách kèm theo)</div>
                     <div style={{ paddingLeft: '10px' }}>a. Nhiệm vụ cụ thể cho nhóm thư ký</div>
-                    {truong && truong['nhoms_with_users'].filter(i => i.loainhom == 2)[0].users.length > 0 &&
+                    {nienkhoa && nienkhoa['nhoms_with_users'].filter(i => i.loainhom == 2)[0].users.length > 0 &&
                         <Table
                             pagination={false}
                             columns={ntkColumns}
-                            dataSource={getNtkData(truong)}
+                            dataSource={getNtkData(nienkhoa)}
                             bordered
                         ></Table>
                     }
                     <div style={{ paddingLeft: '10px' }}>b. Nhiệm vụ cụ thể cho nhóm công tác</div>
-                    {truong && truong['nhoms_with_users'].filter(i => i.loainhom == 0).length > 0 &&
+                    {nienkhoa && nienkhoa['nhoms_with_users'].filter(i => i.loainhom == 0).length > 0 &&
                         <Table
                             pagination={false}
                             columns={nhomColumns}
-                            dataSource={getNhomData(truong)}
+                            dataSource={getNhomData(nienkhoa)}
                             bordered
                         ></Table>
                     }
                     <div style={{ paddingLeft: '10px' }}>3. Phân công thực hiện</div>
-                    {truong &&
+                    {nienkhoa &&
                         <Table
                             pagination={false}
                             columns={phancongColumns}
-                            dataSource={getPhancongData(truong)}
+                            dataSource={getPhancongData(nienkhoa)}
                             bordered
                         ></Table>
                     }
@@ -541,17 +544,17 @@ const Plan = ({ truongId }) => {
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>V. Tập huấn nghiệp vụ tự đánh giá</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.thoigian)}</div><span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'thoigian', truong.kehoach.thoigian, 1);
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.thoigian)}</div><span><EditTwoTone onClick={() => {
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'thoigian', nienkhoa.kehoach.thoigian, 1);
                     }} /></span>
                     <div style={{ paddingLeft: '10px', marginRight: '5px' }}>2) Thành phần: Hội đồng tự đánh giá, nhóm thư ký, các nhóm công tác và các giáo viên, nhân viên có liên quan.</div>
                     <div style={{ paddingLeft: '10px', marginRight: '5px' }}>3) Nội dung: Tập huấn nghiệp vụ tự đánh giá</div>
                 </Col>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>VI. Dự kiến các nguồn lực và thời điểm cần huy động </Text></div>
-                    {truong && <Table
+                    {nienkhoa && <Table
                         columns={nguonlucColumns}
-                        dataSource={getNguonLucData(truong)}
+                        dataSource={getNguonLucData(nienkhoa)}
                         bordered
                         pagination={false}
                     />
@@ -561,31 +564,31 @@ const Plan = ({ truongId }) => {
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>VII. Dự kiến thuê chuyên gia tư vấn để giúp hội đồng triển khai TĐG:</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.thuechuyengia)}</div><span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'thuechuyengia', truong.kehoach.thuechuyengia, 1);
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.thuechuyengia)}</div><span><EditTwoTone onClick={() => {
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'thuechuyengia', nienkhoa.kehoach.thuechuyengia, 1);
                     }} /></span>
                 </Col>
             </Row>
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>VIII. Lập bảng danh mục mã minh chứng:</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.minhchung)}</div><span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'minhchung', truong.kehoach.minhchung, 1);
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.minhchung)}</div><span><EditTwoTone onClick={() => {
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'minhchung', nienkhoa.kehoach.minhchung, 1);
                     }} /></span>
                 </Col>
             </Row>
             <Row style={{ background: 'white' }}>
                 <Col span={16} offset={4}>
                     <div style={{ paddingLeft: '10px' }}><Text strong>IX. Thời gian và nội dung hoạt động:</Text></div>
-                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{truong && truong.kehoach && ReactHtmlParser(truong.kehoach.thoigian2)}</div><span><EditTwoTone onClick={() => {
-                        setAppropiateTarget(truong.kehoach.id, 'thoigian2', truong.kehoach.thoigian2, 1);
+                    <div style={{ paddingLeft: '10px', marginRight: '5px', display: 'inline-block' }}>{nienkhoa && nienkhoa.kehoach && ReactHtmlParser(nienkhoa.kehoach.thoigian2)}</div><span><EditTwoTone onClick={() => {
+                        setAppropiateTarget(nienkhoa.kehoach.id, 'thoigian2', nienkhoa.kehoach.thoigian2, 1);
                     }} /></span>
                 </Col>
                 <Col span={16} offset={4}>
-                    {truong && <Table
+                    {nienkhoa && <Table
                         pagination={false}
                         columns={thoigianhoatdongColumns}
-                        dataSource={getThoigianHoatdongData(truong)}
+                        dataSource={getThoigianHoatdongData(nienkhoa)}
                         bordered
                     ></Table>}
                 </Col>

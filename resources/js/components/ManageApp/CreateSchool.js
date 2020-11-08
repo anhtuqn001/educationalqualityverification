@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '../../../../node_modules/antd/dist/antd.css';
 // import './index.css';
-import { Form, Input, Button, Checkbox, Row, Col, Space, Alert, Radio, message } from 'antd';
+import { Form, Input, Button, Checkbox, Row, Col, Space, Alert, Radio, message, Select } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined, ChromeOutlined, VerifiedOutlined, MacCommandOutlined } from '@ant-design/icons';
 import { getChiMucsData } from '../utils.js';
@@ -30,7 +30,9 @@ const styles = {
     }
 }
 
-const CreateSchool = ({ }) => {
+const { Option } = Select;
+
+const CreateSchool = ({ khuvucs }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const history = useHistory();
     const [errorMessage, setErrorMessage] = useState(null);
@@ -39,35 +41,7 @@ const CreateSchool = ({ }) => {
     const [tendangnhap, setTendangnhap] = useState('');
     const [loaitruong, setLoaitruong] = useState(0);
     const [password, setPassword] = useState('');
-    // const onFinish = values => {
-    //     setIsSubmitting(true);
-    //     fetch('/api/login', {
-    //         method: 'post',
-    //         headers: {
-    //             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(values)
-    //     })
-    //         .then((response) => {
-    //             if (!response.ok) return Promise.reject(response);
-    //             return response.json();
-    //         })
-    //         .then((resData) => {
-    //             console.log(resData);
-    //             localStorage.setItem('token', resData['access_token']);
-    //             getUserInfo();
-    //             setIsSubmitting(false);
-    //         })
-    //         .catch((error) => {
-    //             if (error.status == 401) {
-    //                 setErrorMessage('Sai tên đăng nhập hoặc mật khẩu');
-    //             } else {
-    //                 setErrorMessage('Lỗi hệ thống')
-    //             }
-    //             setIsSubmitting(false);
-    //         });
-    // };
+    const [khuvuc, setKhuvuc] = useState(null)
 
     const handleTentruongChange = (e) => {
         setTentruong(e.target.value);
@@ -89,6 +63,13 @@ const CreateSchool = ({ }) => {
         setLoaitruong(e.target.value);
     }
 
+    const handleKhuvucChange = (value) => {
+        let khuvuc = khuvucs.find(i => i.id == value);
+        if (khuvuc) {
+            setKhuvuc(khuvuc);
+        }
+    }
+
     const handleSubmit = () => {
         setIsSubmitting(true);
         let data = {
@@ -97,7 +78,7 @@ const CreateSchool = ({ }) => {
             loaitruong,
             tendangnhap,
             password,
-            chimucs: getChiMucsData(loaitruong)
+            khuvucid: khuvuc.id
         }
         fetch('/api/truong', {
             method: 'post',
@@ -108,12 +89,12 @@ const CreateSchool = ({ }) => {
             },
             body: JSON.stringify(data)
         }).then((response) => {
-                if (!response.ok) return Promise.reject(response);
-                return response.json();
-            })
+            if (!response.ok) return Promise.reject(response);
+            return response.json();
+        })
             .then((resData) => {
-                let { result } = resData;
-                if(result) {
+                let { success } = resData;
+                if (success) {
                     message.success('Tạo thông tin trường thành công!');
                 }
             })
@@ -123,7 +104,7 @@ const CreateSchool = ({ }) => {
                 } else {
                     setErrorMessage('Lỗi hệ thống')
                 }
-                
+
             }).then(() => {
                 setIsSubmitting(false);
             });
@@ -131,13 +112,10 @@ const CreateSchool = ({ }) => {
 
     return (
         <React.Fragment>
-            {/* <Row>
-                <Button type="primary" onClick={test} loading={isSubmitting}>Test Button</Button>
-            </Row> */}
             <Row
                 style={styles.container}
             >
-                <Col span={6}>
+                <Col span={18}>
                     {/* <Form
                         name="normal_login"
                         className="login-form"
@@ -198,13 +176,20 @@ const CreateSchool = ({ }) => {
                             placeholder="Mật khẩu"
                         />
                     </Form.Item>
+                    {khuvucs && khuvucs.length > 0 &&
+                        <Form.Item>
+                            <Select
+                                value={khuvuc ? khuvuc.id : null}
+                                onChange={handleKhuvucChange}>
+                                {khuvucs.map(i => <Option value={i.id}>{i.tenkhuvuc}</Option>)}
+                            </Select>
+                        </Form.Item>}
                     <Row style={{ marginTop: '20px', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
                         <Radio.Group value={loaitruong} onChange={handleLoaitruongChange}>
                             <Radio value={1}>Mẫu giáo</Radio>
                             <Radio value={2}>Tiểu học</Radio>
                             <Radio value={3}>THCS</Radio>
                             <Radio value={4}>TH 2 cấp</Radio>
-                            <Radio value={5}>Tiểu học cấp 4</Radio>
                         </Radio.Group>
                     </Row>
                     {errorMessage && !!errorMessage.length && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: '10px' }} />}

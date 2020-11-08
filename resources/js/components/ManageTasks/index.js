@@ -35,6 +35,7 @@ const ManageTasks = ({ userId }) => {
     const [selectingChimuc, setSelectingChimuc] = useState(null);
     const { doLogout } = useContext(LogoutContext);
     useEffect(() => {
+        console.log('getting data');
         fetch('/api/getchimucfromuser/' + userId, {
             method: 'get',
             headers: {
@@ -69,8 +70,6 @@ const ManageTasks = ({ userId }) => {
 
     useEffect(() => {
         handleUserChimucs(reformatUserChiMucData(userChimucs));
-        // console.log('users chimucs', reformatUserChiMucData(userChimucs));
-        // console.log('chimucs', chimucs);
     }, [chimucs, userChimucs]);
 
     function handleUserChimucs(userChimucs) {
@@ -140,39 +139,7 @@ const ManageTasks = ({ userId }) => {
         userChimucs[chimucIndex].content2 = content2;
         setUserChimucs([...userChimucs]);
     }
- 
-    const test = () => {
-        fetch('/api/getchimuctable/' + userId, {
-            method: 'get',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Authorization': 'Bearer ' + localStorage.getItem("token"),
-                'Content-Type': 'application/json'
-            },
-        })
-            .then((response) => {
-                if (!response.ok) return Promise.reject(response);
-                return response.json();
-            })
-            .then((result) => {
-                // let { columns, chimuc_table_details } = result.chimuc;
-                // columns = columns.map(i => ({...i, key: i.id}));
-                // chimuc_table_details = chimuc_table_details.map(i => ({...i, key: i.id}))
-                // setColumns(columns);
-                // setChimucTableDetails(chimuc_table_details); 
-                // console.log(result);
-            })
-            .catch((error) => {
-                if (error.status == 401) {
-                    if (localStorage.getItem("token") !== null) {
-                        localStorage.removeItem("token");
-                    }
-                    doLogout();
-                } else {
-                    message.error("Lỗi hệ thống");
-                }
-            })
-    }
+
 
     if(isLoading) {
         return <div style={styles.container}>

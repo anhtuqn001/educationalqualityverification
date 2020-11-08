@@ -37,7 +37,7 @@ const styles = {
 }
 
 
-const LoginPage = ({ getUserInfo }) => {
+const LoginPage = ({ getUserInfo, showState }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState(null);

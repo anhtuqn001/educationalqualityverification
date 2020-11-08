@@ -17,14 +17,14 @@ const styles = {
     },
 }
 
-const CouncilEstablishment = ({ truongId }) => {
+const CouncilEstablishment = ({ nienkhoaId }) => {
     const [iframeTimeoutId, setIframeTimeoutId] = useState(undefined);
     const [isUpdating, setIsUpdating] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const iframeRef = useRef(null);
 
     const exportFile = () => {
-        window.location.href = '/api/exportqdtlhdtdg/' + truongId ;
+        window.location.href = '/api/exportqdtlhdtdg/' + nienkhoaId ;
     }
 
     useEffect(()=>{
@@ -32,7 +32,7 @@ const CouncilEstablishment = ({ truongId }) => {
             updateIframeSrc, 1000 * 3
         );
         setIframeTimeoutId(intervalId)
-        fetch('/api/createqdtlhdtdg/' + truongId, {
+        fetch('/api/createqdtlhdtdg/' + nienkhoaId, {
             method: 'get',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -70,7 +70,7 @@ const CouncilEstablishment = ({ truongId }) => {
     }
     function getIframeLink() {
         console.log('load');
-        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportqdtlhdtdg/${truongId}&embedded=true`;
+        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportqdtlhdtdg/${nienkhoaId}&embedded=true`;
     }
 
     function updateIframeSrc() {

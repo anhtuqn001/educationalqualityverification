@@ -50,7 +50,7 @@ const isChecked = (selectedKeys, eventKey) => selectedKeys.indexOf(eventKey) !==
 
 
 
-const Assignments = ({ truongId }) => {
+const Assignments = ({ nienkhoaId }) => {
     const [chimucs, setChimucs] = useState([]);
     const [users, setUsers] = useState([]);
     const [nhoms, setNhoms] = useState([]);
@@ -65,7 +65,7 @@ const Assignments = ({ truongId }) => {
     const [expandRightKeys, setExpandRightKeys] = useState([]);
 
     useEffect(() => {
-        fetch("/api/chimuc/" + truongId, {
+        fetch("/api/chimuc/" + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token")

@@ -6,6 +6,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -64,6 +65,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\MinhChung', 'user_minhchung', 'userid', 'minhchungid');
     }
 
+    public function khuvuc() {
+        return $this->hasOne('App\KhuVuc', 'userid');
+    }
+
     public function applyChiMucs() {
         $this->chimucs = $this->chimucsWithPivot;
     }
@@ -88,9 +93,24 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function getTruongId() {
-        $truongId = $this->loaidonvi == "App\\Truong" ? $this->iddonvi : $this->thuocdonvi->truongid;
-        return $truongId;
+    public function getNienKhoaId() {
+        $nienkhoaId = $this->loaidonvi == "App\\Nhom" ? $this->thuocdonvi->nienkhoa->id : null;
+        return $nienkhoaId;
+    }
+
+    public function getTruong() {
+        if($this->loaidonvi == "App\\Truong") {
+            // $this->truong = $this->query()->with(['thuocdonvi' => function (MorphTo $morphTo) {
+            //     $morphTo->morphWith([
+            //         Truong::class => ['nienkhoas']
+            //     ]);
+            // }])->get();
+            $this->truong = $this->thuocdonvi;
+        }
+        if($this->loaidonvi == "App\\Nhom") {
+            $this->truong = $this->thuocdonvi->getTruong();
+        }
+        return;
     }
 
     // public function chimucWithTable() {

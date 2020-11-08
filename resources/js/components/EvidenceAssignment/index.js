@@ -25,7 +25,7 @@ const minhchungColumns = [{
 
 
 
-const EvidenceAssignment = ({ truongId }) => {
+const EvidenceAssignment = ({ nienkhoaId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [nhoms, setNhoms] = useState(true);
     const [currentNhomId, setCurrentNhomId] = useState(null);
@@ -40,7 +40,7 @@ const EvidenceAssignment = ({ truongId }) => {
     const [isAssigning, setIsAssigning] = useState(false);
 
     useEffect(() => {
-        fetch('/api/getunassignedminhchungs/' + truongId, {
+        fetch('/api/getunassignedminhchungs/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),

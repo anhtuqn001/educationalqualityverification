@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Nhom;
 use App\Truong;
+use App\NienKhoa;
 
 class NhomController extends Controller
 {
-    public function index(Request $request, $idTruong) {
-       $truong = Truong::findOrFail($idTruong);
-       if($truong != null) {
-           $nhoms = $truong->nhoms()->with('users')->get();
-       }
+    public function index(Request $request, $nienkhoaId) {
+       $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+       $nhoms = $nienkhoa->nhoms()->with('users')->get();
        return response()->json(['nhoms' => $nhoms], 200);
     }
 
@@ -22,7 +21,7 @@ class NhomController extends Controller
         $nhom->manhom = $request->input('manhom');
         $nhom->tennhom = $request->input('tennhom');
         $nhom->ghichu = $request->input('ghichu');
-        $nhom->truongid = $request->input('truongid');
+        $nhom->nienkhoaid = $request->input('nienkhoaid');
         $nhom->save();
         $nhom->users;
         } catch(Exception $e) {
@@ -61,12 +60,10 @@ class NhomController extends Controller
         return response()->json([], 200);
     }
 
-    public function getNhomsWithUserMinhChungs($truongId) {
+    public function getNhomsWithUserMinhChungs($nienkhoaId) {
         try {
-            $truong = Truong::findOrFail($truongId);
-            if($truong != null) {
-                $nhoms = $truong->nhoms()->with(['users.minhchungs.tieuchi'])->get();
-            }
+            $nienkhoa = NienKhoa::findOrFail($nienkhoaId);
+            $nhoms = $nienkhoa->nhoms()->with(['users.minhchungs.tieuchi'])->get();
         } catch(Exception $e) {
             return response()->json([
                 'error'=> $e->getMessage()

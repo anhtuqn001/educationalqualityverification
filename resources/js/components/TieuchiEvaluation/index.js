@@ -9,7 +9,7 @@ import { PrinterOutlined } from '@ant-design/icons';
 import { generateTieuChuansTreeData } from '../utils.js';
 import TieuchiReport from './TieuchiReport.js'; 
 
-const TieuchiEvaluation = ({ truongId }) => {
+const TieuchiEvaluation = ({ nienkhoaId }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [tieuchuans, setTieuchuans] = useState(null);
     // const [tieuchis, setTieuchis] = useState(null);
@@ -19,7 +19,7 @@ const TieuchiEvaluation = ({ truongId }) => {
     // }
 
     useEffect(() => {
-        fetch('/api/gettieuchuan/' + truongId, {
+        fetch('/api/gettieuchuan/' + nienkhoaId, {
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -30,7 +30,6 @@ const TieuchiEvaluation = ({ truongId }) => {
             return response.json();
         }).then((resData) => {
             let { tieuchuans } = resData;
-            let tieuchisArr = [];
             // tieuchuans.forEach(i => {
             //     let { tieuchis } = i;
             //     if(tieuchis && tieuchis.length > 0) {

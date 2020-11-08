@@ -31,14 +31,14 @@ const styles = {
     },
 }
 
-const WorkingUsersList = ({ truongId }) => {
+const WorkingUsersList = ({ nienkhoaId }) => {
     const [iframeTimeoutId, setIframeTimeoutId] = useState(undefined);
     const [isUpdating, setIsUpdating] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const iframeRef = useRef(null);
 
     const exportFile = () => {
-        window.location.href = '/api/exportdstv/' + truongId ;
+        window.location.href = '/api/exportdstv/' + nienkhoaId ;
     }
 
     useEffect(()=>{
@@ -46,7 +46,7 @@ const WorkingUsersList = ({ truongId }) => {
             updateIframeSrc, 1000 * 3
         );
         setIframeTimeoutId(intervalId)
-        fetch('/api/createdstv/' + truongId, {
+        fetch('/api/createdstv/' + nienkhoaId, {
             method: 'get',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -84,7 +84,7 @@ const WorkingUsersList = ({ truongId }) => {
     }
     function getIframeLink() {
         console.log('load');
-        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportdstv/${truongId}&embedded=true`;
+        return `https://docs.google.com/gview?url=https://vuonxanh.lihanet.com/api/exportdstv/${nienkhoaId}&embedded=true`;
     }
 
     function updateIframeSrc() {
